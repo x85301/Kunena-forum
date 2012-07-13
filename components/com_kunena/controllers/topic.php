@@ -381,6 +381,25 @@ class KunenaControllerTopic extends KunenaController {
 		$this->setRedirect($message->getUrl($category->exists() ? $category->id : $message->catid, false));
 	}
 
+    public function rate() {
+        if(! JRequest::checkToken('get')) {
+            $this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_ERROR_TOKEN' ), 'error' );
+            $this->redirectBack ();
+        }
+
+        $message = KunenaForumMessageHelper::get($this->mesid);
+        if (!$message->authorise('rate')) {
+            $this->app->enqueueMessage ( $message->getError() );
+            $this->redirectBack ();
+        }
+
+
+
+        $rate = $this->app->get('rate');
+
+        $this->app->enqueueMessage( JText::_ ( 'COM_KUNENA_RATE_SUCESS'));
+    }
+
 	public function subscribe() {
 		if (! JRequest::checkToken ('get')) {
 			$this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_ERROR_TOKEN' ), 'error' );
