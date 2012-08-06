@@ -307,7 +307,6 @@ class KunenaForumMessage extends KunenaDatabaseObject {
 			'attachment.read'=>array('Read'),
 			'attachment.create'=>array('Read','Own','EditTime'),
 			'attachment.delete'=>array(), // TODO: In the future we might want to restrict this: array('Read','EditTime'),
-            'rate'=>array('Read', 'Rate'),
 		);
 		$user = KunenaUserHelper::get($user);
 		if (!isset($actions[$action])) {

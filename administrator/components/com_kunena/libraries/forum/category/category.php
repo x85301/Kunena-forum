@@ -47,6 +47,7 @@ class KunenaForumCategory extends KunenaDatabaseObject {
 			'topic.subscribe'=>array('Read','NotBanned', 'Subscribe'),
 			'topic.sticky'=>array('Read','NotBanned', 'Moderate'),
 			'topic.lock'=>array('Read','NotBanned', 'Moderate'),
+            'topic.rate'=>array('Read', 'NotBanned', 'Unlocked'),
 			'topic.poll.read'=>array('Read', 'Poll'),
 			'topic.poll.create'=>array('Read', 'GuestWrite', 'NotBanned', 'Unlocked', 'Poll'),
 			'topic.poll.edit'=>array('Read', 'NotBanned', 'Unlocked', 'Poll'),

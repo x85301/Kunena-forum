@@ -489,6 +489,15 @@ class KunenaViewTopic extends KunenaView {
 		else echo $this->loadTemplateFile("poll");
 	}
 
+    function displayRating()
+    {
+        //TODO check if Rating is allowed in this topic
+
+        $this->rating = $this->get('Rating');
+
+        echo $this->loadTemplateFile("rating");
+    }
+
 	function displayMessageProfile() {
 		echo $this->getMessageProfileBox();
 	}

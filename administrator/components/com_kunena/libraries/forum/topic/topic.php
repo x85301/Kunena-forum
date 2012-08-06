@@ -41,6 +41,7 @@ class KunenaForumTopic extends KunenaDatabaseObject {
 			'subscribe'=>array('Read'),
 			'sticky'=>array('Read'),
 			'lock'=>array('Read'),
+            'rate'=>array('Read', 'Unlocked'),
 			'poll.read'=>array('Read'),
 			'poll.create'=>array('Own'),
 			'poll.edit'=>array('Read','Own'),
@@ -222,6 +223,16 @@ class KunenaForumTopic extends KunenaDatabaseObject {
 		}
 		return $poll;
 	}
+
+    /**
+     * @return KunenaForumTopicRate Object
+     * @since 2.0.? //TODO
+     */
+    public function getRating() {
+        $rate = KunenaForumTopicRateHelper::getSelected($this->id);
+
+        return $rate;
+    }
 
 	public function getHits() {
 		return $this->hits;

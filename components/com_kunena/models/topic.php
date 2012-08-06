@@ -227,6 +227,10 @@ class KunenaModelTopic extends KunenaModel {
 		return $this->getTopic()->getPoll();
 	}
 
+    public function getRating() {
+        return $this->getTopic()->getRating();
+    }
+
 	public function getPollUserCount() {
 		return $this->getPoll()->getUserCount();
 	}
