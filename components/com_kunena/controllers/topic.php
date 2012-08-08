@@ -402,8 +402,9 @@ class KunenaControllerTopic extends KunenaController {
         }
         $activityIntegration->onAfterRate($this->me->userid, $topic);
 
+        $this->app->enqueueMessage(JText::_('COM_KUNENA_RATE_SUCESS'));
+
         if (JFactory::getApplication()->input->get('type') != 'ajax') {
-            $this->app->enqueueMessage(JText::_('COM_KUNENA_RATE_SUCESS'));
             $this->redirectBack();
         }
 

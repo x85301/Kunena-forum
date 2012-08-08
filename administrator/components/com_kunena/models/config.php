@@ -380,6 +380,9 @@ class KunenaAdminModelConfig extends KunenaModel {
 		$lists ['mailmod'] = JHTML::_ ( 'select.genericlist', $mailoptions, 'cfg_mailmod', 'class="inputbox" size="1"', 'value', 'text', $this->config->mailmod );
 		$lists ['mailadmin'] = JHTML::_ ( 'select.genericlist', $mailoptions, 'cfg_mailadmin', 'class="inputbox" size="1"', 'value', 'text', $this->config->mailadmin );
 
+        // Added new options into Kunena 2.?? TODO rating
+        $lists['ratingenabled'] = JHTML::_('select.genericlist', $yesno, 'cfg_ratingenabled', 'class="inputbox" size="1"', 'value', 'text', $this->config->ratingenabled);
+
 		return $lists;
 	}
 }

@@ -219,6 +219,8 @@ class KunenaConfig extends JObject {
 	public $cache = 1;
 	public $cache_time = 60; // 1 minute
 	public $ebay_affiliate_id = 5337089937;
+    // New for 2.?.?
+    public $ratingenabled = 1; //For rating integration, for disable the rating
 
 	public function __construct() {
 		parent::__construct ();

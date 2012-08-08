@@ -34,7 +34,6 @@ var kunena_anonymous_name = "'.JText::_('COM_KUNENA_USERNAME_ANONYMOUS').'";
 		<?php $this->displayModulePosition( 'kunena_topictitle' ); ?>
 		<?php if ($this->usertopic->favorite) : ?><div class="kfavorite"></div><?php endif ?>
 		<?php if (!empty($this->keywords)) : ?><div class="kkeywords"><?php echo JText::sprintf('COM_KUNENA_TOPIC_TAGS', $this->escape($this->keywords)) ?></div><?php endif ?>
-        <!-- TODO Sven Option erstellen um Rating an und aus zu schalten -->
         <?php $this->displayRating() ?>
 	</div>
 	<div class="kcontainer">

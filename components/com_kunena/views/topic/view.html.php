@@ -491,7 +491,9 @@ class KunenaViewTopic extends KunenaView {
 
     function displayRating()
     {
-        //TODO check if Rating is allowed in this topic
+        if (!$this->config->ratingenabled || !$this->category->allow_ratings) {
+            return false;
+        }
 
         $this->rating = $this->get('Rating');
 
