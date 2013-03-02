@@ -445,15 +445,23 @@ class KunenaView extends JViewLegacy {
 
 	public function setTitle($title) {
 		if (!$this->state->get('embedded')) {
+			$sitename = $this->config->seo_optional_title ? $this->config->seo_optional_title : $this->app->getCfg('sitename');
+			// {s} is used to protect the leading and trailing spaces
+			$separator = str_replace('{s}', ' ', $this->config->seo_title_separator);
 			// Check for empty title and add site name if param is set
 			$title = strip_tags($title);
+			// Set sitename before
 			if ($this->app->getCfg('sitename_pagetitles', 0) == 1) {
-				$title = JText::sprintf('JPAGETITLE', $this->app->getCfg('sitename'), $this->config->board_title .' - '. $title);
+				if( $this->config->seo_forum_name_position== 'before') $title = $sitename .' '.$separator.' '.  $this->config->board_title .' '.$separator.' '. $title;
+				elseif ( $this->config->seo_forum_name_position== 'after')  $title = $sitename  .' '.$separator.' '. $title .' '.$separator.' '.  $this->config->board_title;
+			// Set sitename after
 			} elseif ($this->app->getCfg('sitename_pagetitles', 0) == 2) {
-				$title = JText::sprintf('JPAGETITLE', $title .' - '. $this->config->board_title, $this->app->getCfg('sitename'));
+				if( $this->config->seo_forum_name_position== 'before') $title = $title .' '.$separator.' '. $this->config->board_title .' '.$separator.' '.  $sitename;
+				elseif ( $this->config->seo_forum_name_position== 'after')  $title = $sitename  .' '.$separator.' '. $title .' '.$separator.' '.  $this->config->board_title;
+			// Doesn't set a sitename
 			} else {
 				// TODO: allow translations/overrides (also above)
-				$title = KunenaFactory::getConfig()->board_title .' :: '. $title;
+				$title = KunenaFactory::getConfig()->board_title .' '.$separator.' '. $title;
 			}
 			$this->document->setTitle($title);
 		}

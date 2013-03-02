@@ -449,12 +449,14 @@ function getTopicClass($prefix='k', $class='topic') {
 
 	protected function _prepareDocument($type){
 		if ( $type=='default' ) {
+			$separator = str_replace('{s}', ' ', $this->config->seo_title_separator);
 			$page = intval ( $this->state->get('list.start') / $this->state->get('list.limit') ) + 1;
 			$pages = intval ( ($this->total-1) / $this->state->get('list.limit') ) + 1;
 
-			$this->headerText = $this->title = JText::_('COM_KUNENA_THREADS_IN_FORUM').': '. $this->category->name;
+			$this->headerText = $this->title = JText::_('COM_KUNENA_THREADS_IN_FORUM').$separator.' '. $this->category->name;
+			$display_pages = $this->config->seo_number_pages ? " ({$page}/{$pages})": '';
 
-			$title = JText::sprintf('COM_KUNENA_VIEW_CATEGORY_DEFAULT', $this->category->name) . " ({$page}/{$pages})";
+			$title = JText::sprintf('COM_KUNENA_VIEW_CATEGORY_DEFAULT', $this->category->name) . " ".$display_pages;
 			$this->setTitle( $title );
 
 			$keywords = $this->escape ( JText::_('COM_KUNENA_CATEGORIES') . ", {$this->parentCategory->name}, {$this->category->name}, {$this->config->board_title}" );

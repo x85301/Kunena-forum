@@ -529,7 +529,9 @@ class KunenaViewUser extends KunenaView {
 			$page = intval($this->state->get('list.start')/$this->state->get('list.limit'))+1;
 			$pages = intval(($this->total-1)/$this->state->get('list.limit'))+1;
 
-			$title = JText::_('COM_KUNENA_VIEW_USER_LIST'). " ({$page}/{$pages})";
+			$display_pages = $this->config->seo_number_pages ? " ({$page}/{$pages})": '';
+
+			$title = JText::_('COM_KUNENA_VIEW_USER_LIST').' '.$display_pages;
 			$this->setTitle($title);
 			// TODO: set keywords and description
 

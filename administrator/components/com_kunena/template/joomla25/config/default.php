@@ -110,17 +110,6 @@ $paneOptions = array(
 			</fieldset>
 
 			<fieldset>
-				<legend><?php echo JText::_('COM_KUNENA_SEO_SETTINGS') ?></legend>
-				<table class="kadmin-adminform">
-					<tr align="center" valign="middle">
-						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_SEF') ?></td>
-						<td align="left" valign="top" width="25%"><?php echo $this->lists ['sef'] ?></td>
-						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_SEF_DESC') ?></td>
-					</tr>
-				</table>
-			</fieldset>
-
-			<fieldset>
 				<legend><?php echo JText::_('COM_KUNENA_CACHING_SETTINGS') ?></legend>
 				<table class="kadmin-adminform">
 					<tr align="center" valign="middle">
@@ -132,6 +121,51 @@ $paneOptions = array(
 						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CFG_CACHE_TIME') ?></td>
 						<td align="left" valign="top" width="25%"><?php echo $this->lists ['cache_time'] ?></td>
 						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CFG_CACHE_TIME_DESC') ?></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<?php echo JHtml::_('tabs.panel', JText::_('COM_KUNENA_SEO_SETTINGS'), 'panel_frontend'); ?>
+
+			<fieldset>
+				<legend><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_FRIENDLYURLS') ?></legend>
+				<table class="kadmin-adminform">
+					<tr align="center" valign="middle">
+						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_SEF') ?></td>
+						<td align="left" valign="top" width="25%"><?php echo $this->lists ['sef'] ?></td>
+						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_SEF_DESC') ?></td>
+					</tr>
+				</table>
+			</fieldset>
+
+			<fieldset>
+				<legend><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_DEFINETITELPAGES') ?></legend>
+				<table class="kadmin-adminform">
+					<tr align="center" valign="middle">
+						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_OPTIONALTITLE') ?></td>
+						<td align="left" valign="top" width="25%"><input type="text"
+							name="cfg_seo_optional_title"
+							value="<?php echo $this->escape($this->config->seo_optional_title);
+						?>" /></td>
+						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_OPTIONALTITLE_DESC') ?></td>
+					</tr>
+					<tr align="center" valign="middle">
+						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_FORUMNAME') ?></td>
+						<td align="left" valign="top" width="25%"><?php echo $this->lists ['seo_forum_name_position'] ?></td>
+						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_FORUMNAMEPOS_DESC') ?></td>
+					</tr>
+					<tr align="center" valign="middle">
+						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_TITLESEPARATOR') ?></td>
+						<td align="left" valign="top" width="25%"><input type="text"
+							name="cfg_seo_title_separator"
+							value="<?php echo $this->escape($this->config->seo_title_separator);
+						?>" /></td>
+						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_TITLESEPARATOR_DESC') ?></td>
+					</tr>
+					<tr align="center" valign="middle">
+						<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_PAGESNUMBER') ?></td>
+						<td align="left" valign="top" width="25%"><?php echo $this->lists ['seo_number_pages'] ?></td>
+						<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_PAGESNUMBER_DESC') ?></td>
 					</tr>
 				</table>
 			</fieldset>

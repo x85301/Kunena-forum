@@ -264,7 +264,7 @@ class KunenaViewTopics extends KunenaView {
 		$limit = $this->state->get('list.limit');
 		$page = intval($this->state->get('list.start')/$limit)+1;
 		$total = intval(($this->total-1)/$limit)+1;
-		$pagesTxt = "{$page}/{$total}";
+		$pagesTxt = $this->config->seo_number_pages ? "({$page}/{$total})": '';
 
 		if ( $type=='default' ){
 
@@ -293,12 +293,12 @@ class KunenaViewTopics extends KunenaView {
 			}
 			$this->title = $this->headerText;
 
-			$title = "{$this->title} ({$pagesTxt})";
+			$title = "{$this->title} {$pagesTxt}";
 			$this->setTitle( $title );
 
 			// TODO: add keywords
 
-			$description = $this->headerText . $this->escape ( " ({$pagesTxt}) - {$this->config->board_title}" );
+			$description = $this->headerText . $this->escape ( " {$pagesTxt} - {$this->config->board_title}" );
 			$this->setDescription ( $description );
 
 		} elseif($type=='user'){
@@ -326,7 +326,7 @@ class KunenaViewTopics extends KunenaView {
 
 			// TODO: add keywords
 
-			$description = $this->headerText . $this->escape ( " ({$pagesTxt}) - {$this->config->board_title}" );
+			$description = $this->headerText . $this->escape ( " {$pagesTxt} - {$this->config->board_title}" );
 			$this->setDescription ( $description );
 
 		} elseif($type=='posts'){
@@ -350,12 +350,12 @@ class KunenaViewTopics extends KunenaView {
 			}
 			$this->title = $this->headerText;
 
-			$title = "{$this->title} ({$pagesTxt})";
+			$title = "{$this->title} {$pagesTxt}";
 			$this->setTitle( $title );
 
 			// TODO: add keywords
 
-			$description = $this->headerText . $this->escape ( " ({$pagesTxt}) - {$this->config->board_title}" );
+			$description = $this->headerText . $this->escape ( " {$pagesTxt} - {$this->config->board_title}" );
 			$this->setDescription ( $description );
 		}
 	}

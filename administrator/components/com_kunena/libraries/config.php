@@ -220,6 +220,11 @@ class KunenaConfig extends JObject {
 	public $iptracking = 1;
 	// New for 2.0.3
 	public $rss_feedburner_url = '';
+	// New for 3.0.0
+	public $seo_optional_title = '';
+	public $seo_forum_name_position = 'before';
+	public $seo_title_separator = '{s}-{s}';
+	public $seo_number_pages = 1;
 
 	public function __construct() {
 		parent::__construct ();

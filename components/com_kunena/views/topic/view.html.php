@@ -904,8 +904,9 @@ class KunenaViewTopic extends KunenaView {
 
 			$page = intval ( $this->state->get('list.start') / $this->state->get('list.limit') ) + 1;
 			$pages = intval ( ($this->total-1) / $this->state->get('list.limit') ) + 1;
+			$display_pages = $this->config->seo_number_pages ? " ({$page}/{$pages})": '';
 
-			$title = JText::sprintf('COM_KUNENA_VIEW_TOPICS_DEFAULT', $this->topic->subject) . " ({$page}/{$pages})";
+			$title = JText::sprintf('COM_KUNENA_VIEW_TOPICS_DEFAULT', $this->topic->subject) . " ".$display_pages;
 			$this->setTitle($title);
 
 			// TODO: use real keywords, too

@@ -380,6 +380,15 @@ class KunenaAdminModelConfig extends KunenaModel {
 
 		$lists ['iptracking'] = JHtml::_('select.genericlist', $yesno, 'cfg_iptracking', 'class="inputbox" size="1"', 'value', 'text', $this->config->iptracking);
 
+		// Added new options into Kunena 3.0.0
+		$forumnameoptions = array();
+		$forumnameoptions[] = JHtml::_('select.option', 'after', JText::_('COM_KUNENA_CONFIGURATION_LABEL_AFTER'));
+		$forumnameoptions[] = JHtml::_('select.option', 'before', JText::_('COM_KUNENA_CONFIGURATION_LABEL_BEFORE'));
+
+		$lists ['seo_forum_name_position'] = JHtml::_('select.genericlist', $forumnameoptions, 'cfg_seo_forum_name_position', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_forum_name_position);
+
+		$lists ['seo_number_pages'] = JHtml::_('select.genericlist', $yesno, 'cfg_seo_number_pages', 'class="inputbox" size="1"', 'value', 'text', $this->config->seo_number_pages);
+
 		return $lists;
 	}
 }
