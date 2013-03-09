@@ -167,11 +167,11 @@ $paneOptions = array(
 							<td valign="top"><?php echo $this->options ['allow_polls']; ?></td>
 							<td valign="top"><?php echo JText::_('COM_KUNENA_A_POLL_CATEGORIES_ALLOWED_DESC'); ?></td>
 						</tr>
-                        <tr>
-                            <td class="nowrap" valign="top"><?php echo JText::_('COM_KUNENA_RATING_CATEGORIES_ALLOWED'); ?>:</td>
-                            <td valign="top"><?php echo $this->options ['allow_ratings']; ?></td>
-                            <td valign="top"><?php echo JText::_('COM_KUNENA_RATING_CATEGORIES_ALLOWED_DESC'); ?></td>
-                        </tr>
+						<tr>
+							<td><?php echo JText::_('COM_KUNENA_CATEGORIES_FIELDSET_LABEL_RATINGALLOWED'); ?>:</td>
+							<td><?php echo $this->options ['allow_ratings']; ?></td>
+							<td><?php echo JText::_('COM_KUNENA_CATEGORIES_FIELDSET_LABEL_RATINGALLOWED_DESC'); ?></td>
+						</tr>
 						<?php /* TODO: enable features
 						<tr>
 							<td class="nowrap" valign="top"><?php echo JText::_('COM_KUNENA_CATEGORY_CHANNELS'); ?>:</td>

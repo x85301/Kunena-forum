@@ -1026,12 +1026,12 @@ $paneOptions = array(
 					</table>
 				</fieldset>
 				<fieldset>
-					<legend><?php echo JText::_('COM_KUNENA_RATING') ?></legend>
+					<legend><?php echo JText::_('COM_KUNENA_CONFIGURATION_LABEL_RATING') ?></legend>
 						<table class="kadmin-adminform">
 							<tr align="center" valign="middle">
-								<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_RATING_ENABLED') ?></td>
+								<td align="left" valign="top" width="25%"><?php echo JText::_('COM_KUNENA_CONFIGURATION_RATING_ENABLED') ?></td>
 								<td align="left" valign="top" width="25%"><?php echo $this->lists ['ratingenabled'] ?></td>
-								<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_RATING_DESC') ?></td>
+								<td align="left" valign="top"><?php echo JText::_('COM_KUNENA_CONFIGURATION_RATING_DESC') ?></td>
 							</tr>
 						</table>
 				</fieldset>

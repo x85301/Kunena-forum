@@ -49,6 +49,7 @@ class TableKunenaCategories extends KunenaTable {
 	public $last_post_id = null;
 	public $last_post_time = null;
 	public $params = null;
+	public $allow_ratings = null;
 
 	public function __construct($db) {
 		parent::__construct ( '#__kunena_categories', 'id', $db );

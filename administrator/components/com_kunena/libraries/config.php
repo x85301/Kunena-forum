@@ -220,7 +220,7 @@ class KunenaConfig extends JObject {
 	// New for 2.0.3
 	public $rss_feedburner_url = '';
 	// New for 3.?.?
-	public $ratingenabled = 1; //For rating integration, for disable the rating
+	public $ratingenabled = 0; //For rating integration, for disable the rating
 
 	public function __construct() {
 		parent::__construct ();

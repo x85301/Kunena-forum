@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `#__kunena_categories` (
 	`last_topic_id` int(11) NOT NULL default '0',
 	`last_post_id` int(11) NOT NULL default '0',
 	`last_post_time` int(11) NOT NULL default '0',
+	`allow_ratings` TINYINT( 4 ) NOT NULL default '0',
 	`params` text NOT NULL,
 	PRIMARY KEY (id),
 	KEY `parent_id` (parent_id),

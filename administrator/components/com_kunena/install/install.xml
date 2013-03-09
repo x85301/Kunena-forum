@@ -75,6 +75,7 @@
 		<field name="last_topic_id" type="int(11)" null="0" default="0" />
 		<field name="last_post_id" type="int(11)" null="0" default="0" />
 		<field name="last_post_time" type="int(11)" null="0" default="0" />
+		<field name="allow_ratings" type="tinyint(4)" null="0" default="0" />
 		<field name="params" type="text" null="0" />
 
 		<key name="PRIMARY" unique="1" columns="id" />

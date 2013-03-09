@@ -144,6 +144,11 @@ JHtml::_('dropdown.init');
 									<td><?php echo $this->options ['allow_polls']; ?></td>
 									<td><?php echo JText::_('COM_KUNENA_A_POLL_CATEGORIES_ALLOWED_DESC'); ?></td>
 								</tr>
+								<tr>
+									<td><?php echo JText::_('COM_KUNENA_CATEGORIES_FIELDSET_LABEL_RATINGALLOWED'); ?>:</td>
+									<td><?php echo $this->options ['allow_ratings']; ?></td>
+									<td><?php echo JText::_('COM_KUNENA_CATEGORIES_FIELDSET_LABEL_RATINGALLOWED_DESC'); ?></td>
+								</tr>
 <?php /*
 								<tr>
 									<td><?php echo JText::_('COM_KUNENA_CATEGORY_CHANNELS'); ?>:</td>
