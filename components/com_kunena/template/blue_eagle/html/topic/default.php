@@ -30,10 +30,11 @@ var kunena_anonymous_name = "'.JText::_('COM_KUNENA_USERNAME_ANONYMOUS', true).'
 
 <div class="kblock">
 	<div class="kheader">
-		<h2><span><?php echo JText::_('COM_KUNENA_TOPIC') ?> <?php echo $this->escape($this->topic->subject) ?></span></h2>
+		<h2><span><?php echo JText::_('COM_KUNENA_TOPIC') ?> <a href="/J25test/index.php?option=com_kunena&view=topic&defaultmenu=477&Itemid=475&task=rate&stars=3&id=8&catid=2&<?php echo JUtility::getToken()?>=1">testlink</a><?php //echo $this->escape($this->topic->subject) ?></span></h2>
 		<?php $this->displayModulePosition( 'kunena_topictitle' ); ?>
 		<?php if ($this->usertopic->favorite) : ?><div class="kfavorite"></div><?php endif ?>
 		<?php if (!empty($this->keywords)) : ?><div class="kkeywords"><?php echo JText::sprintf('COM_KUNENA_TOPIC_TAGS', $this->escape($this->keywords)) ?></div><?php endif ?>
+        <?php $this->displayRating() ?>
 	</div>
 	<div class="kcontainer">
 		<div class="kbody"><?php $this->displayMessages() ?></div>

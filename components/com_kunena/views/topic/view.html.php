@@ -482,6 +482,17 @@ class KunenaViewTopic extends KunenaView {
 		else echo $this->loadTemplateFile("poll");
 	}
 
+    function displayRating()
+    {
+        if (!$this->config->ratingenabled || !$this->category->allow_ratings) {
+            return false;
+        }
+
+        $this->rating = $this->get('Rating');
+
+        echo $this->loadTemplateFile("rating");
+    }
+
 	function displayMessageProfile() {
 		echo $this->getMessageProfileBox();
 	}

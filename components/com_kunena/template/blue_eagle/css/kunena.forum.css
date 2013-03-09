@@ -263,7 +263,7 @@ PX		EM			PCT			PT
 	overflow: hidden;
 	word-wrap: break-word;
 }
-#Kunena div.kblock label {
+#Kunena div.kblock > label {
 	clear: both;
 	/*display: block;*/
 }

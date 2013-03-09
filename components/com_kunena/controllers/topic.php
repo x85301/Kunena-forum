@@ -387,6 +387,38 @@ class KunenaControllerTopic extends KunenaController {
 		$this->setRedirect($message->getUrl($category->exists() ? $category->id : $message->catid, false));
 	}
 
+    public function rate()
+    {
+        if (!JRequest::checkToken('get')) {
+            $this->app->enqueueMessage(JText::_('COM_KUNENA_ERROR_TOKEN'), 'error');
+            $this->redirectBack();
+        }
+
+        $topic = KunenaForumTopicHelper::get($this->id);
+        if (!$topic->authorise('rate')) {
+            $this->app->enqueueMessage($topic->getError());
+            $this->redirectBack();
+        }
+
+        $rate = KunenaForumTopicRateHelper::get($this->id);
+        $activityIntegration = KunenaFactory::getActivityIntegration();
+        if (!$rate->save($this->me) && JFactory::getApplication()->input->get('type') != 'ajax') {
+            $this->app->enqueueMessage($rate->getError());
+            $this->redirectBack();
+        }
+        $activityIntegration->onAfterRate($this->me->userid, $topic);
+
+        $this->app->enqueueMessage(JText::_('COM_KUNENA_RATE_SUCESS'));
+
+        if (JFactory::getApplication()->input->get('type') != 'ajax') {
+            $this->redirectBack();
+        }
+
+        echo KunenaForumTopicRateHelper::getSelected($this->id);
+
+        JFactory::getApplication()->close();
+    }
+
 	public function subscribe() {
 		if (! JSession::checkToken ('get')) {
 			$this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_ERROR_TOKEN' ), 'error' );
