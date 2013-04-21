@@ -158,13 +158,12 @@ class KunenaForumStatistics {
 		if ($this->todayTopicCount === null) {
 			$todaystart = strtotime ( date ( 'Y-m-d' ) );
 			$yesterdaystart = $todaystart - (1 * 24 * 60 * 60);
-			$this->_db->setQuery ( "SELECT
-				SUM(time>={$todaystart} AND parent=0) AS todayTopicCount,
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select("SUM(time>={$todaystart} AND parent=0) AS todayTopicCount,
 				SUM(time>={$todaystart} AND parent>0) AS todayReplyCount,
 				SUM(time>={$yesterdaystart} AND time<{$todaystart} AND parent=0) AS yesterdayTopicCount,
-				SUM(time>={$yesterdaystart} AND time<{$todaystart} AND parent>0) AS yesterdayReplyCount
-				FROM #__kunena_messages WHERE time>={$yesterdaystart} AND hold=0" );
-
+				SUM(time>={$yesterdaystart} AND time<{$todaystart} AND parent>0) AS yesterdayReplyCount")->from("{$this->_db->qn('#__kunena_messages')}")->where("time>={$yesterdaystart}")->where('hold=0');
+			$this->_db->setQuery ( $kquery );
 			$counts = $this->_db->loadObject ();
 			KunenaError::checkDatabaseError();
 			if ($counts) {
@@ -263,13 +262,9 @@ class KunenaForumStatistics {
 	public function loadTopPolls($limit=0) {
 		$limit = $limit ? $limit : $this->_config->poppollscount;
 		if (count($this->topPolls) < $limit) {
-			$query = "SELECT poll.threadid AS id, SUM(opt.votes) AS count
-					FROM #__kunena_polls_options AS opt
-					INNER JOIN #__kunena_polls AS poll ON poll.id=opt.pollid
-					GROUP BY pollid
-					HAVING count > 0
-					ORDER BY count DESC";
-			$this->_db->setQuery($query, 0, $limit);
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('poll.threadid AS id, SUM(opt.votes) AS count')->from("{$this->_db->qn('#__kunena_polls_options')} AS opt")->innerJoin("{$this->_db->qn('#__kunena_polls')} AS poll ON poll.id=opt.pollid")->group('pollid')->having('count > 0')->order('count DESC');
+			$this->_db->setQuery($kquery, 0, $limit);
 			$polls = (array) $this->_db->loadObjectList('id');
 			KunenaError::checkDatabaseError();
 			$this->topPolls = KunenaForumTopicHelper::getTopics(array_keys($polls));
@@ -299,12 +294,9 @@ class KunenaForumStatistics {
 	public function loadTopThankyous($limit=0) {
 		$limit = $limit ? $limit : $this->_config->popthankscount;
 		if (count($this->topThanks) < $limit) {
-			$query = "SELECT t.targetuserid AS id, COUNT(t.targetuserid) AS count
-				FROM `#__kunena_thankyou` AS t
-				INNER JOIN `#__users` AS u ON u.id=t.targetuserid
-				GROUP BY t.targetuserid
-				ORDER BY count DESC";
-			$this->_db->setQuery ( $query, 0, $limit );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('t.targetuserid AS id, COUNT(t.targetuserid) AS count')->from("{$this->_db->qn('#__kunena_thankyou')} AS t")->innerJoin("{$this->_db->qn('#__users')} AS u ON u.id=t.targetuserid")->group('t.targetuserid')->order('count DESC');
+			$this->_db->setQuery ( $kquery, 0, $limit );
 			$this->topThanks = (array) $this->_db->loadObjectList ();
 			KunenaError::checkDatabaseError();
 

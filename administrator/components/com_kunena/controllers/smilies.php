@@ -61,19 +61,15 @@ class KunenaAdminControllerSmilies extends KunenaController {
 		$smiley_emoticonbar = JRequest::getInt ( 'smiley_emoticonbar', 0 );
 		$smileyid = JRequest::getInt( 'smileyid', 0 );
 
+		$kquery = new KunenaDatabaseQuery();
 		if ( !$smileyid ) {
-			$db->setQuery ( "INSERT INTO #__kunena_smileys SET
-					code={$db->quote($smiley_code)},
-					location={$db->quote($smiley_location)},
-					emoticonbar={$db->quote($smiley_emoticonbar)}" );
+			$kquery->insert("{$db->qn('#__kunena_smileys')}")->set("code={$db->quote($smiley_code)}, location={$db->quote($smiley_location)}, emoticonbar={$db->quote($smiley_emoticonbar)}");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		} else {
-			$db->setQuery ( "UPDATE #__kunena_smileys SET
-					code={$db->quote($smiley_code)},
-					location={$db->quote($smiley_location)},
-					emoticonbar={$db->quote($smiley_emoticonbar)}
-				WHERE id = '$smileyid'" );
+			$kquery->update("{$db->qn('#__kunena_smileys')}")->set("code={$db->quote($smiley_code)}, location={$db->quote($smiley_location)}, emoticonbar={$db->quote($smiley_emoticonbar)}")->where("id = {$db->quote($smileyid)}");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		}
@@ -115,7 +111,9 @@ class KunenaAdminControllerSmilies extends KunenaController {
 		JArrayHelper::toInteger($cids);
 		$cids = implode ( ',', $cids );
 		if ($cids) {
-			$db->setQuery ( "DELETE FROM #__kunena_smileys WHERE id IN ($cids)" );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->delete()->from("{$db->qn('#__kunena_smileys')}")->where("id IN ($cids)");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		}

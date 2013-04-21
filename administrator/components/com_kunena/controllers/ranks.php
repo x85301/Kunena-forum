@@ -63,21 +63,15 @@ class KunenaAdminControllerRanks extends KunenaController {
 		$rank_min = JRequest::getInt ( 'rank_min' );
 		$rankid = JRequest::getInt( 'rankid', 0 );
 
+		$kquery = new KunenaDatabaseQuery();
 		if ( !$rankid ) {
-			$db->setQuery ( "INSERT INTO #__kunena_ranks SET
-					rank_title={$db->quote($rank_title)},
-					rank_image={$db->quote($rank_image)},
-					rank_special={$db->quote($rank_special)},
-					rank_min={$db->quote($rank_min)}" );
+			$kquery->insert("{$db->qn('#__kunena_ranks')}")->set("rank_title={$db->quote($rank_title)}, rank_image={$db->quote($rank_image)}, rank_special={$db->quote($rank_special)}, rank_min={$db->quote($rank_min)}");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		} else {
-			$db->setQuery ( "UPDATE #__kunena_ranks SET
-					rank_title={$db->quote($rank_title)},
-					rank_image={$db->quote($rank_image)},
-					rank_special={$db->quote($rank_special)},
-					rank_min={$db->quote($rank_min)}
-				WHERE rank_id={$db->quote($rankid)}" );
+			$kquery->update("{$db->qn('#__kunena_ranks')}")->set("rank_title={$db->quote($rank_title)}, rank_image={$db->quote($rank_image)}, rank_special={$db->quote($rank_special)}, rank_min={$db->quote($rank_min)}")->where("rank_id={$db->quote($rankid)}");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		}
@@ -117,7 +111,9 @@ class KunenaAdminControllerRanks extends KunenaController {
 		$cids = JRequest::getVar ( 'cid', array (), 'post', 'array' );
 		$cids = implode ( ',', $cids );
 		if ($cids) {
-			$db->setQuery ( "DELETE FROM #__kunena_ranks WHERE rank_id IN ($cids)" );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->delete()->from("{$db->qn('#__kunena_ranks')}")->where("rank_id IN ($cids)");
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 		}
