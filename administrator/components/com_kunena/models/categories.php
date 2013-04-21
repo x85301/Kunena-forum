@@ -193,7 +193,9 @@ class KunenaAdminModelCategories extends KunenaModel {
 			} else {
 				// New category is by default child of the first section -- this will help new users to do it right
 				$db = JFactory::getDBO ();
-				$db->setQuery ( "SELECT a.id, a.name FROM #__kunena_categories AS a WHERE parent_id='0' AND id!='$category->id' ORDER BY ordering" );
+				$query = new KunenaDatabaseQuery();
+				$query->select('a.id, a.name')->from("{$db->qn('#__kunena_categories')} AS a")->where("parent_id={$db->Quote('0')}")->where("id!={$db->Quote($category->id)}")->order('ordering');
+				$db->setQuery ( $query );
 				$sections = $db->loadObjectList ();
 				KunenaError::checkDatabaseError ();
 				$category->parent_id = $this->getState ( 'item.parent_id' );
