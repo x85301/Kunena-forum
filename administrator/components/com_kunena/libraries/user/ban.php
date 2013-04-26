@@ -159,13 +159,10 @@ class KunenaUserBan extends JObject
 	public static function getBannedUsers($start=0, $limit=50) {
 		$c = __CLASS__;
 		$db = JFactory::getDBO ();
+		$kquery = new KunenaDatabaseQuery();
 		$now = new JDate();
-		$query = "SELECT b.*
-			FROM #__kunena_users_banned AS b
-			INNER JOIN #__users AS u ON u.id=b.userid
-			WHERE (b.expiration = {$db->quote($db->getNullDate())} OR b.expiration > {$db->quote($now->toSql())})
-			ORDER BY b.created_time DESC";
-		$db->setQuery ( $query, $start, $limit );
+		$kquery->select('b.*')->from("{$db->qn('#__kunena_users_banned')} AS b")->innerJoin("{$db->qn('#__users')} AS u ON u.id=b.userid")->where("(b.expiration = {$db->quote($db->getNullDate())} OR b.expiration > {$db->quote($now->toSql())})")->order('b.created_time DESC');
+		$db->setQuery ( $kquery, $start, $limit );
 		$results = $db->loadAssocList ();
 		KunenaError::checkDatabaseError();
 
@@ -184,11 +181,9 @@ class KunenaUserBan extends JObject
 		if (!$userid) return array();
 		$c = __CLASS__;
 		$db = JFactory::getDBO ();
-		$query = "SELECT *
-			FROM #__kunena_users_banned
-			WHERE `userid`={$db->quote($userid)}
-			ORDER BY id DESC";
-		$db->setQuery ( $query );
+		$kquery = new KunenaDatabaseQuery();
+		$kquery->select('*')->from("{$db->qn('#__kunena_users_banned')}")->where("userid={$db->quote($userid)}")->order('id DESC');
+		$db->setQuery ( $kquery );
 		$results = $db->loadAssocList ();
 		KunenaError::checkDatabaseError();
 

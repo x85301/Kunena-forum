@@ -123,11 +123,9 @@ abstract class KunenaUserHelper {
 			$userlist = implode ( ',', $e_userids );
 
 			$db = JFactory::getDBO ();
-			$query = "SELECT u.name, u.username, u.email, u.block as blocked, u.registerDate, u.lastvisitDate, ku.*
-				FROM #__users AS u
-				LEFT JOIN #__kunena_users AS ku ON u.id = ku.userid
-				WHERE u.id IN ({$userlist})";
-			$db->setQuery ( $query );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('u.name, u.username, u.email, u.block as blocked, u.registerDate, u.lastvisitDate, ku.*')->from("{$db->qn('#__users')} AS u")->leftJoin("{$db->qn('#__kunena_users')} AS ku ON u.id = ku.userid")->where("u.id IN ({$userlist})");
+			$db->setQuery ( $kquery );
 			$results = $db->loadAssocList ();
 			KunenaError::checkDatabaseError ();
 
@@ -166,12 +164,14 @@ abstract class KunenaUserHelper {
 	public static function getTotalCount() {
 		if (self::$_total === null) {
 			$db = JFactory::getDBO ();
+			$kquery = new KunenaDatabaseQuery();
 			$config = KunenaFactory::getConfig();
 			if ($config->userlist_count_users == '1' ) $where = '(block=0 OR activation="")';
 			elseif ($config->userlist_count_users == '2' ) $where = '(block=0 AND activation="")';
 			elseif ($config->userlist_count_users == '3' ) $where = 'block=0';
 			else $where = '1';
-			$db->setQuery ( "SELECT COUNT(*), MAX(id) FROM #__users WHERE {$where}" );
+			$kquery->select('COUNT(*), MAX(id)')->from("{$db->qn('#__users')}")->where("{$where}");
+			$db->setQuery ( $kquery );
 			list (self::$_total, self::$_lastid) = $db->loadRow ();
 			KunenaError::checkDatabaseError();
 		}
@@ -187,12 +187,9 @@ abstract class KunenaUserHelper {
 		$limit = $limit ? $limit : KunenaFactory::getConfig()->popusercount;
 		if (count(self::$_topposters) < $limit) {
 			$db = JFactory::getDBO ();
-			$query = "SELECT u.id, ku.posts AS count
-				FROM #__kunena_users AS ku
-				INNER JOIN #__users AS u ON u.id=ku.userid
-				WHERE ku.posts>0
-				ORDER BY ku.posts DESC";
-			$db->setQuery ( $query, 0, $limit );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('u.id, ku.posts AS count')->from("{$db->qn('#__kunena_users')}  AS ku")->innerJoin("{$db->qn('#__users')} AS u ON u.id=ku.userid")->where('ku.posts>0')->order('ku.posts DESC');
+			$db->setQuery ( $kquery, 0, $limit );
 			self::$_topposters = (array) $db->loadObjectList ();
 			KunenaError::checkDatabaseError();
 		}
@@ -205,13 +202,9 @@ abstract class KunenaUserHelper {
 	public static function getOnlineUsers() {
 		if (self::$_online === null) {
 			$db = JFactory::getDBO ();
-			$query = "SELECT s.userid, s.time
-				FROM #__session AS s
-				WHERE s.client_id=0 AND s.userid>0
-				GROUP BY s.userid
-				ORDER BY s.time DESC";
-
-			$db->setQuery($query);
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('s.userid, s.time')->from("{$db->qn('#__session')} AS s")->where('s.client_id=0')->where('s.userid>0')->group('s.userid')->order('s.time DESC');
+			$db->setQuery($kquery);
 			self::$_online = (array) $db->loadObjectList('userid');
 			KunenaError::checkDatabaseError();
 		}
@@ -238,13 +231,13 @@ abstract class KunenaUserHelper {
 			$querytime = '';
 			if ( $kunena_config->show_session_starttime != 0 ) {
 				$time = JFactory::getDate()->toUnix() - $kunena_config->show_session_starttime;
-				$querytime = 'AND time > '.$time;
+				$querytime = 'time > '.$time;
 			}
 
-			$query = 'SELECT guest, time, client_id
-				FROM #__session
-				WHERE client_id = 0 ' . $querytime;
-			$db->setQuery ( $query );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('guest, time, client_id')->from("{$db->qn('#__session')}")->where('client_id = 0');
+			if ( $querytime ) $kquery->where($querytime);
+			$db->setQuery ( $kquery );
 			$sessions = (array) $db->loadObjectList ();
 			KunenaError::checkDatabaseError ();
 
@@ -300,11 +293,9 @@ abstract class KunenaUserHelper {
 		$db = JFactory::getDBO ();
 
 		// If user has no user_topics, set posts into 0
-		$query ="UPDATE #__kunena_users AS u
-			LEFT JOIN #__kunena_user_topics AS ut ON ut.user_id=u.userid
-			SET u.posts = 0
-			WHERE ut.user_id IS NULL";
-		$db->setQuery($query);
+		$kquery = new KunenaDatabaseQuery();
+		$kquery->update("{$db->qn('#__kunena_users')} AS u")->leftJoin("{$db->qn('#__kunena_user_topics')} AS ut ON ut.user_id=u.userid")->set('u.posts = 0')->where('ut.user_id IS NULL');
+		$db->setQuery($kquery);
 		$db->query ();
 		if (KunenaError::checkDatabaseError ())
 			return false;

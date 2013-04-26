@@ -129,22 +129,19 @@ class KunenaAdminControllerTools extends KunenaController {
 			$this->app->enqueueMessage ( JText::sprintf('COM_KUNENA_SYNC_USERS_ADD_DONE',$db->getAffectedRows ()) );
 		}
 		if ($userdel) {
-			$db->setQuery ( "DELETE a
-					FROM #__kunena_users AS a
-					LEFT JOIN #__users AS b ON a.userid=b.id
-					WHERE b.username IS NULL" );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->delete('a')->from("{$db->qn('#__kunena_users')} AS a")->leftJoin("{$db->qn('#__users')} AS b ON a.userid=b.id")->where('b.username IS NULL');
+			$db->setQuery ( $kquery );
 			$db->query ();
 			if (KunenaError::checkDatabaseError()) return;
 			$this->app->enqueueMessage ( JText::sprintf('COM_KUNENA_SYNC_USERS_DELETE_DONE',$db->getAffectedRows ()) );
 		}
 		if ($userrename) {
+			$kquery = new KunenaDatabaseQuery();
 			$queryName = $this->config->username ? "username" : "name";
 
-			$query = "UPDATE #__kunena_messages AS m
-					INNER JOIN #__users AS u
-					SET m.name = u.{$queryName}
-					WHERE m.userid = u.id";
-			$db->setQuery($query);
+			$kquery->update("{$db->qn('#__kunena_messages')} AS m")->innerJoin("{$db->qn('#__users')} AS u")->set("m.name = u.{$queryName}")->where('m.userid = u.id');
+			$db->setQuery($kquery);
 			$db->query();
 			if (KunenaError::checkDatabaseError()) return;
 
@@ -159,9 +156,10 @@ class KunenaAdminControllerTools extends KunenaController {
 
 		if ($state === null) {
 			// First run: get last message id (if topics were created with <K2.0)
-			$query = "SELECT MAX(id) FROM #__kunena_messages";
+			$kquery = new KunenaDatabaseQuery();
 			$db = JFactory::getDBO();
-			$db->setQuery ( $query );
+			$kquery->select('MAX(id)')->from("{$db->qn('#__kunena_messages')}");
+			$db->setQuery ( $kquery );
 			$state = new StdClass();
 			$state->step = 0;
 			$state->maxId = (int) $db->loadResult ();
@@ -261,8 +259,9 @@ class KunenaAdminControllerTools extends KunenaController {
 
 		if ( $re_string != null ) {
 			$db	= JFactory::getDBO();
-			$query = "UPDATE #__kunena_messages SET subject=TRIM(TRIM(LEADING {$db->quote($re_string)} FROM subject)) WHERE subject LIKE {$db->quote($re_string.'%')}";
-			$db->setQuery ( $query );
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->update("{$db->qn('#__kunena_messages')}")->set("subject=TRIM(TRIM(LEADING {$db->quote($re_string)} FROM subject))")->where("subject LIKE {$db->quote($re_string.'%')}");
+			$db->setQuery ( $kquery );
 			$db->Query ();
 			KunenaError::checkDatabaseError();
 
@@ -292,12 +291,13 @@ class KunenaAdminControllerTools extends KunenaController {
 		$where ='';
 		if ($cleanup_days) {
 			$clean_date = JFactory::getDate()->toUnix() - ($cleanup_days * 86400);
-			$where = 'WHERE time < '.$clean_date;
+			$where = 'time < '.$clean_date;
 		}
 
 		$db	= JFactory::getDBO();
-		$query = "UPDATE #__kunena_messages SET ip=NULL {$where};";
-		$db->setQuery ( $query );
+		$kquery = new KunenaDatabaseQuery();
+		$kquery->update("{$db->qn('#__kunena_messages')}")->set('ip=NULL')->where($where);
+		$db->setQuery ( $kquery );
 		$db->Query ();
 		KunenaError::checkDatabaseError();
 
