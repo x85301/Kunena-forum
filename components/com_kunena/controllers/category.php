@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Controllers
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -26,8 +26,8 @@ class KunenaControllerCategory extends KunenaAdminControllerCategories {
 
 	function jump() {
 		$catid = JRequest::getInt('catid', 0);
-		if (!$catid) $this->setRedirect(KunenaRoute::_('index.php?option=com_kunena&view=category&layout=list'));
-		else $this->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}"));
+		if (!$catid) $this->setRedirect(KunenaRoute::_('index.php?option=com_kunena&view=category&layout=list', false));
+		else $this->setRedirect(KunenaRoute::_("index.php?option=com_kunena&view=category&catid={$catid}", false));
 	}
 
 	function markread() {

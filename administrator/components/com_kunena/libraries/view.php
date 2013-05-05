@@ -3,7 +3,7 @@
  * Kunena Component
  * @package Kunena.Framework
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -36,13 +36,10 @@ class KunenaView extends JViewLegacy {
 		if ($this->app->isSite() && !isset($config['template_path'])) $config['template_path'] = $this->ktemplate->getTemplatePaths("html/$name", true);
 
 		if ($this->app->isAdmin()) {
-			if (version_compare(JVERSION, '3', '>')) {
-				// Joomla 3.0+ template:
-				$config['template_path'] = array(KPATH_ADMIN.'/template/joomla30/'.$name);
-			} else {
-				// Joomla 2.5 template:
-				$config['template_path'] = array(KPATH_ADMIN.'/template/joomla25/'.$name);
-			}
+			$templateAdmin = KunenaFactory::getAdminTemplate();
+			$templateAdmin->initialize();
+
+			$config['template_path'] = $templateAdmin->getTemplatePaths($name);
 		}
 
 		parent::__construct($config);
@@ -86,7 +83,7 @@ class KunenaView extends JViewLegacy {
 		} else {
 			$this->document->addHeadLink( KunenaRoute::_(), 'canonical', 'rel', '' );
 			include JPATH_SITE .'/'. $this->ktemplate->getFile ('html/display.php');
-			if ($this->config->get('credits', 1)) echo $this->poweredBy();
+			if ($this->config->get('credits', 1)) $this->poweredBy();
 		}
 	}
 
@@ -103,6 +100,7 @@ class KunenaView extends JViewLegacy {
 		if (isset($this->common)) {
 			if ($this->config->board_offline && ! $this->me->isAdmin ()) {
 				// Forum is offline
+				JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
 				$this->common->header = JText::_('COM_KUNENA_FORUM_IS_OFFLINE');
 				$this->common->body = $this->config->offline_message;
 				$this->common->html = true;
@@ -111,6 +109,7 @@ class KunenaView extends JViewLegacy {
 				return;
 			} elseif ($this->config->regonly && ! $this->me->exists() && ! $this->teaser) {
 				// Forum is for registered users only
+				JResponse::setHeader('Status', '403 Forbidden', 'true');
 				$this->common->header = JText::_('COM_KUNENA_LOGIN_NOTIFICATION');
 				$this->common->body = JText::_('COM_KUNENA_LOGIN_FORUM');
 				$this->common->display('default');
@@ -118,7 +117,7 @@ class KunenaView extends JViewLegacy {
 				return;
 			} elseif (!method_exists($this, $layoutFunction) && !file_exists(KPATH_SITE."/views/{$view}/{$layout}.php")) {
 				// Layout was not found (don't allow Joomla to raise an error)
-				echo $this->displayError(array(JText::_('COM_KUNENA_NO_ACCESS')), 404);
+				$this->displayError(array(JText::_('COM_KUNENA_NO_ACCESS')), 404);
 				KUNENA_PROFILER ? $this->profiler->stop("display {$viewName}/{$layoutName}") : null;
 				return;
 			}
@@ -165,7 +164,7 @@ class KunenaView extends JViewLegacy {
 	}
 
 	public function getButton($link, $name, $scope, $type, $id = null) {
-		return $this->ktemplate->getButton($link, $name, $scope, $type, $id);
+		return $this->ktemplate->getButton(KunenaRoute::_($link), $name, $scope, $type, $id);
 	}
 
 	public function getIcon($name, $title='') {
@@ -264,13 +263,27 @@ class KunenaView extends JViewLegacy {
 	public function displayError($messages = array(), $code = 404) {
 		$title = JText::_('COM_KUNENA_ACCESS_DENIED');	// can be overriden
 
-		// TODO: should we use header function from Joomla instead?
 		switch ((int) $code) {
-			case 404:
-				header("HTTP/1.0 404 Not Found");
+			case 400:
+				JResponse::setHeader('Status', '400 Bad Request', 'true');
+				break;
+			case 401:
+				JResponse::setHeader('Status', '401 Unauthorized', 'true');
 				break;
 			case 403:
-				header('HTTP/1.1 403 Forbidden');
+				JResponse::setHeader('Status', '403 Forbidden', 'true');
+				break;
+			case 404:
+				JResponse::setHeader('Status', '404 Not Found', 'true');
+				break;
+			case 410:
+				JResponse::setHeader('Status', '410 Gone', 'true');
+				break;
+			case 500:
+				JResponse::setHeader('Status', '500 Internal Server Error', 'true');
+				break;
+			case 503:
+				JResponse::setHeader('Status', '503 Service Temporarily Unavailable', 'true');
 				break;
 			default:
 		}
@@ -369,7 +382,7 @@ class KunenaView extends JViewLegacy {
 	/**
 	 * Load a template file -- first look in the templates folder for an override
 	 *
-	 * @param   string   The name of the template source file ...
+	 * @param   string  $tpl	The name of the template source file ...
 	 * 					automatically searches the template paths and compiles as needed.
 	 * @return  string   The output of the the template script.
 	 */

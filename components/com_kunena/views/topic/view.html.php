@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Views
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -59,12 +59,14 @@ class KunenaViewTopic extends KunenaView {
 		}
 
 		if (!KunenaForumMessageHelper::get($this->topic->first_post_id)->exists()) {
-			return $this->displayError(array(JText::_('COM_KUNENA_NO_ACCESS')), 404);
+			$this->displayError(array(JText::_('COM_KUNENA_NO_ACCESS')), 404);
+			return;
 		}
 
 		$errors = $this->getErrors();
 		if ($errors) {
-			return $this->displayNoAccess($errors);
+			$this->displayNoAccess($errors);
+			return;
 		}
 
 		$this->messages	= $this->get ( 'Messages' );
@@ -614,7 +616,11 @@ class KunenaViewTopic extends KunenaView {
 			$this->topicButtons->set('sticky', $this->getButton(sprintf($task, $sticky), $sticky, 'topic', 'moderation'));
 			$this->topicButtons->set('lock', $this->getButton(sprintf($task, $lock), $lock, 'topic', 'moderation'));
 			$this->topicButtons->set('moderate', $this->getButton(sprintf($layout, 'moderate'), 'moderate', 'topic', 'moderation'));
-			$this->topicButtons->set('delete', $this->getButton(sprintf($task, 'delete'), 'delete', 'topic', 'moderation'));
+			if ($this->topic->hold == 1 || $this->topic->hold == 0) {
+				$this->topicButtons->set('delete', $this->getButton(sprintf($task, 'delete'), 'delete', 'topic', 'moderation'));
+			} elseif ($this->topic->hold == 2 || $this->topic->hold == 3) {
+				$this->topicButtons->set('undelete', $this->getButton ( sprintf($task, 'undelete'), 'undelete', 'topic', 'moderation'));
+			}
 		}
 
 		if ($this->config->enable_threaded_layouts) {
@@ -719,10 +725,12 @@ class KunenaViewTopic extends KunenaView {
 				$task = "index.php?option=com_kunena&view=topic&task=%s&catid={$this->category->id}&id={$this->topic->id}&mesid={$this->message->id}&" . JSession::getFormToken() . '=1';
 
 				// for normal users, show only limited number of thankyou (config->thankyou_max)
-				if ( !$this->me->isAdmin() || !$this->me->isModerator() ) {
+				if ( !$this->me->isAdmin() && !$this->me->isModerator() ) {
 					if (count($message->thankyou) > $this->config->thankyou_max) $this->more_thankyou = count($message->thankyou) - $this->config->thankyou_max;
 					$this->total_thankyou =count($message->thankyou);
 					$thankyous = array_slice($message->thankyou, 0, $this->config->thankyou_max, true);
+				} else {
+					$thankyous = $message->thankyou;
 				}
 
 				if( $this->message->authorise('unthankyou') ) $canUnthankyou = true;
@@ -733,8 +741,6 @@ class KunenaViewTopic extends KunenaView {
 					. KunenaRoute::_(sprintf($task, "unthankyou&userid={$userid}")).'"><img src="'.$this->ktemplate->getImagePath('icons/publish_x.png').'" title="" alt="" /></a>' : '';
 					$this->thankyou[] = KunenaFactory::getUser(intval($userid))->getLink().$thankyou_delete;
 				}
-
-				$this->thankyou = implode(', ', $this->thankyou);
 			}
 		}
 
@@ -824,11 +830,16 @@ class KunenaViewTopic extends KunenaView {
 	}
 
 	function getPagination($maxpages) {
-		$uri = KunenaRoute::normalize(null, true);
-		if ($uri) $uri->delVar('mesid');
-		$pagination = new KunenaHtmlPagination ( $this->total, $this->state->get('list.start'), $this->state->get('list.limit') );
-		$pagination->setDisplay($maxpages, $uri);
-		return $pagination->getPagesLinks();
+		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination->setDisplayedPages($maxpages);
+
+        $uri = KunenaRoute::normalize(null, true);
+        if ($uri) {
+            $uri->delVar('mesid');
+            $pagination->setUri($uri);
+        }
+
+        return $pagination->getPagesLinks();
 	}
 
 	// Helper functions
@@ -902,6 +913,12 @@ class KunenaViewTopic extends KunenaView {
 		return $this->category->displayField($name);
 	}
 
+	function displayQuickReply() {
+		if ( $this->quickreply ) {
+			echo $this->loadTemplateFile ( 'quickreply' );
+		}
+	}
+
 	function canSubscribe() {
 		if (! $this->me->userid || ! $this->config->allowsubscriptions || $this->config->topic_subscriptions == 'disabled')
 			return false;
@@ -926,11 +943,10 @@ class KunenaViewTopic extends KunenaView {
 			// Create Meta Description form the content of the first message
 			// better for search results display but NOT for search ranking!
 			$description = KunenaHtmlParser::stripBBCode($this->topic->first_post_message, 182);
-			$description = preg_replace('/\s+/', ' ', $description); // remove newlines
-			$description = preg_replace('/^[^\w0-9]+/', '', $description); // remove characters at the beginning that are not letters or numbers
+            $description = preg_replace('/\s+/', ' ', $description); // remove newlines
 			$description = trim($description); // Remove trailing spaces and beginning
 			if ($page) {
-				$description .= ' - ' . $page . '/' . $pages;  //avoid the "duplicate meta description" error in google webmaster tools
+				$description .= " ({$page}/{$pages})";  //avoid the "duplicate meta description" error in google webmaster tools
 			}
 			$this->setDescription ( $description );
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Kunena Component
- * @package Kunena.Template.Strapless
+ * @package Kunena.Template.Crypsis
  * @subpackage Category
  *
  * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
@@ -13,4 +13,6 @@ defined ( '_JEXEC' ) or die ();
 <?php if (!empty ($this->categoryButtons)) : ?>
 
 <td class="hidden-phone"> <?php echo implode( $this->categoryButtons) ; ?> </td>
+<br />
 <?php endif ?>
+<br />

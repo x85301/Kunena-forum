@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Controllers
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -128,6 +128,16 @@ class KunenaControllerTopic extends KunenaController {
 			if (preg_match('/\D*(\d+)/', $key, $matches))
 				$intkey = (int)$matches[1];
 			if ($file['error'] != UPLOAD_ERR_NO_FILE) $message->uploadAttachment($intkey, $key, $this->catid);
+		}
+
+		// Make sure that message has visible content (text, images or objects) to be shown.
+		$text = KunenaHtmlParser::parseBBCode($message->message);
+		if (!preg_match('!(<img |<object )!', $text)) {
+			$text = trim(JFilterOutput::cleanText($text));
+		}
+		if (!$text) {
+			$this->app->enqueueMessage ( JText::_('COM_KUNENA_LIB_TABLE_MESSAGES_ERROR_NO_MESSAGE'), 'error' );
+			$this->redirectBack ();
 		}
 
 		// Activity integration
@@ -270,6 +280,22 @@ class KunenaControllerTopic extends KunenaController {
 		// Check if we are editing first post and update topic if we are!
 		if ($topic->first_post_id == $message->id) {
 			$topic->subject = $fields['subject'];
+		}
+
+		// If user removed all the text and message doesn't contain images or objects, delete the message instead.
+		$text = KunenaHtmlParser::parseBBCode($message->message);
+		if (!preg_match('!(<img |<object )!', $text)) {
+			$text = trim(JFilterOutput::cleanText($text));
+		}
+		if (!$text) {
+			// Reload message (we don't want to change it).
+			$message->load();
+			if ($message->publish(KunenaForum::DELETED)) {
+				$this->app->enqueueMessage(JText::_('COM_KUNENA_POST_SUCCESS_DELETE'));
+			} else {
+				$this->app->enqueueMessage($message->getError(), 'notice');
+			}
+			$this->app->redirect($message->getUrl($this->return, false));
 		}
 
 		// Activity integration
@@ -661,7 +687,7 @@ class KunenaControllerTopic extends KunenaController {
 		} else {
 			$this->app->enqueueMessage ( $target->getError(), 'notice' );
 		}
-		$this->app->redirect ( $url );
+		if (isset($url)) $this->app->redirect($url);
 	}
 
 	public function approve() {
@@ -711,6 +737,7 @@ class KunenaControllerTopic extends KunenaController {
 		}
 
 		$error = null;
+		$targetobject = null;
 		if (!$object->authorise ( 'move' )) {
 			$error = $object->getError();
 		} elseif (!$target->authorise ( 'read' )) {

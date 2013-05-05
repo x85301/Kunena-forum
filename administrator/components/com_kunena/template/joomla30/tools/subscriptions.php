@@ -4,12 +4,16 @@
  * @package Kunena.Administrator.Template
  * @subpackage SyncUsers
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
 defined ( '_JEXEC' ) or die ();
+
+/** @var KunenaAdminViewTools $this */
 ?>
+
+<div id="kunena" class="admin override">
 	<div id="j-sidebar-container" class="span2">
 		<div id="sidebar">
 			<div class="sidebar-nav"><?php include KPATH_ADMIN.'/template/joomla30/common/menu.php'; ?></div>
@@ -17,7 +21,7 @@ defined ( '_JEXEC' ) or die ();
 	</div>
 	<div id="j-main-container" class="span10">
 
-	<div class="kadmin-functitle icon-config"><?php echo JText::_('Subscriptions'); ?></div>
+		<div class="kadmin-functitle icon-config"><?php echo JText::_('Subscriptions'); ?></div>
 			<table class="adminform">
 				<tr>
 					<th><?php echo JText::_('Active Category Subscriptions'); ?></th>
@@ -67,10 +71,11 @@ defined ( '_JEXEC' ) or die ();
 					<td><?php echo intval($sub->admin) ?></td>
 				</tr>
 				<?php endforeach ?>
-		</table>
+			</table>
+		</div>
 	</div>
-</div>
 
-<div class="pull-right small">
-	<?php echo KunenaVersion::getLongVersionHTML(); ?>
+	<div class="pull-right small">
+		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+	</div>
 </div>

@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Views
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -51,8 +51,8 @@ class KunenaViewUser extends KunenaView {
 	}
 
 	function getPagination($maxpages) {
-		$pagination = new KunenaHtmlPagination ( $this->count, $this->state->get('list.start'), $this->state->get('list.limit') );
-		$pagination->setDisplay($maxpages);
+		$pagination = new KunenaPagination($this->count, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination->setDisplayedPages($maxpages);
 		return $pagination->getPagesLinks();
 	}
 
@@ -295,15 +295,27 @@ class KunenaViewUser extends KunenaView {
 	}
 
 	function displaySummary() {
+		$private = KunenaFactory::getPrivateMessaging();
+		if ($this->me->userid == $this->user->id) {
+			$PMCount = $private->getUnreadCount($this->me->userid);
+			$this->PMlink = $private->getInboxLink($PMCount ? JText::sprintf('COM_KUNENA_PMS_INBOX_NEW', $PMCount) : JText::_('COM_KUNENA_PMS_INBOX'));
+		} else {
+			$this->PMlink = $this->profile->profileIcon('private');
+		}
+
 		echo $this->loadTemplateFile('summary');
 	}
 
 	function displayTab() {
 		$this->email = null;
-		if ( $this->config->showemail && ( !$this->profile->hideEmail || $this->me->isModerator() ) ) {
-			$this->email = JHtml::_('email.cloak', $this->user->email);
-		} else if ( $this->me->isAdmin() ) {
-			$this->email = JHtml::_('email.cloak', $this->user->email);
+		if ($this->user->email) {
+			if ( $this->config->showemail && ( !$this->profile->hideEmail || $this->me->isModerator() ) ) {
+				$this->email = JHtml::_('email.cloak', $this->user->email);
+			} elseif ( $this->me->isAdmin() ) {
+				$this->email = JHtml::_('email.cloak', $this->user->email);
+			}
+		} else {
+			$this->email = '';
 		}
 
 		switch ($this->do) {
@@ -430,8 +442,33 @@ class KunenaViewUser extends KunenaView {
 		$this->galleries = $this->getAvatarGalleries($path, 'gallery');
 		$this->galleryimg = $this->getAvatarGallery($path . '/' . $this->gallery);
 
+		$this->galleryImagesList = $this->getAllImagesInGallery();
+
 		$this->row(true);
 		echo $this->loadTemplateFile('avatar');
+	}
+
+	function getAllImagesInGallery() {
+		$path = JPATH_ROOT . '/media/kunena/avatars/gallery';
+		$galleryFolders = JFolder::folders($path);
+		$files_list = array();
+		$defaultGallery = JFolder::files($path);
+		$newdefaultGallery = array();
+
+		foreach($defaultGallery as $image) {
+			if( $image != 'index.html' ) $newdefaultGallery[] = $image;
+		}
+		$files_list['default'] = json_encode($newdefaultGallery);
+
+		foreach($galleryFolders as $folder) {
+			$tmp = JFolder::files($path. '/' .$folder);
+			$newgalleryFolders = array();
+			foreach($tmp as $img) {
+				if( $img != 'index.html' )$newgalleryFolders[] = $img;
+			}
+			$files_list[$folder] = json_encode($newgalleryFolders);
+		}
+		return $files_list;
 	}
 
 	function displayEditSettings() {
@@ -473,7 +510,8 @@ class KunenaViewUser extends KunenaView {
 
 	function displayUserRow($user) {
 		$this->user = KunenaFactory::getUser($user->id);
-		if ($this->config->userlist_email && (!$this->user->hideEmail || $this->me->isModerator())) {
+		$this->email = '';
+		if ($this->user->email && $this->config->userlist_email && (!$this->user->hideEmail || $this->me->isModerator())) {
 			$this->email = JHtml::_('email.cloak', $this->user->email);
 		}
 		$this->rank_image = $this->user->getRank (0, 'image');

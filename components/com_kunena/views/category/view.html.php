@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Views
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -62,7 +62,7 @@ class KunenaViewCategory extends KunenaView {
 		if ($this->category->isSection()) {
 // TODO: turn this on:
 /*			if ($this->me->isAdmin($this->category)) {
-				$url = KunenaRoute::_("index.php?option=com_kunena&view=category&layout=manage&catid={$this->category->id}");
+				$url = "index.php?option=com_kunena&view=category&layout=manage&catid={$this->category->id}";
 				$this->category_manage = $this->getButton($url, 'manage', 'category', 'moderation');
 			}*/
 		}
@@ -210,7 +210,7 @@ class KunenaViewCategory extends KunenaView {
 		$this->sectionButtons = array();
 		if ($this->me->exists()) {
 			$token = '&' . JSession::getFormToken() . '=1';
-			$this->sectionButtons['markread'] = $this->getButton(KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$this->section->id}{$token}"), 'markread', 'section', 'user');
+			$this->sectionButtons['markread'] = $this->getButton("index.php?option=com_kunena&view=category&task=markread&catid={$this->section->id}{$token}", 'markread', 'section', 'user');
 		}
 		echo $this->loadTemplateFile('section');
 		$this->rowno = 0;
@@ -275,13 +275,13 @@ class KunenaViewCategory extends KunenaView {
 
 		// Is user allowed to post new topic?
 		if ($this->category->getNewTopicCategory()->exists()) {
-			$url = KunenaRoute::_("index.php?option=com_kunena&view=topic&layout=create&catid={$this->category->id}");
+			$url = "index.php?option=com_kunena&view=topic&layout=create&catid={$this->category->id}";
 			$this->categoryButtons['create'] = $this->getButton($url, 'create', 'topic', 'communication');
 		}
 
 		// Is user allowed to mark forums as read?
 		if ($this->me->exists() && $this->total) {
-			$url = KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$this->category->id}{$token}");
+			$url = "index.php?option=com_kunena&view=category&task=markread&catid={$this->category->id}{$token}";
 			$this->categoryButtons['markread'] = $this->getButton($url, 'markread', 'category', 'user');
 		}
 
@@ -290,10 +290,10 @@ class KunenaViewCategory extends KunenaView {
 			$subscribed = $this->category->getSubscribed($this->me->userid);
 
 			if (!$subscribed) {
-				$url = KunenaRoute::_("index.php?option=com_kunena&view=category&task=subscribe&catid={$this->category->id}{$token}");
+				$url = "index.php?option=com_kunena&view=category&task=subscribe&catid={$this->category->id}{$token}";
 				$this->categoryButtons['subscribe'] = $this->getButton($url, 'subscribe', 'category', 'user');
 			} else {
-				$url = KunenaRoute::_("index.php?option=com_kunena&view=category&task=unsubscribe&catid={$this->category->id}{$token}");
+				$url = "index.php?option=com_kunena&view=category&task=unsubscribe&catid={$this->category->id}{$token}";
 				$this->categoryButtons['unsubscribe'] = $this->getButton($url, 'unsubscribe', 'category', 'user');
 			}
 		}
@@ -442,9 +442,28 @@ function getTopicClass($prefix='k', $class='topic') {
 	}
 
 	function getPagination($maxpages) {
-		$pagination = new KunenaHtmlPagination ( $this->total, $this->state->get('list.start'), $this->state->get('list.limit') );
-		$pagination->setDisplay($maxpages);
+		$pagination = new KunenaPagination($this->total, $this->state->get('list.start'), $this->state->get('list.limit'));
+		$pagination->setDisplayedPages($maxpages);
 		return $pagination->getPagesLinks();
+	}
+
+	public function getMarkReadButtonURL($category_id, $numTopics) {
+		// Is user allowed to mark forums as read?
+		if ($this->me->exists() && $numTopics) {
+			$token = '&' . JSession::getFormToken() . '=1';
+
+			$url = KunenaRoute::_("index.php?option=com_kunena&view=category&task=markread&catid={$category_id}{$token}");
+
+			return $url;
+		}
+	}
+
+	public function getCategoryRSSURL($catid, $xhtml = true) {
+		if ($this->config->enablerss) {
+			$params = '&catid=' . ( int ) $catid;
+			return KunenaRoute::_ ( "index.php?option=com_kunena&view=rss&format=feed{$params}", $xhtml );
+		}
+		return;
 	}
 
 	protected function _prepareDocument($type){

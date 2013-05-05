@@ -4,13 +4,13 @@
  * @package Kunena.Framework
  * @subpackage Tables
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
 defined ( '_JEXEC' ) or die ();
 
-require_once (dirname ( __FILE__ ) . '/kunena.php');
+require_once (__DIR__ . '/kunena.php');
 
 /**
  * Kunena Categories
@@ -65,6 +65,8 @@ class TableKunenaCategories extends KunenaTable {
 			} elseif (is_array($array['params'])) {
 				$registry = new JRegistry;
 				$registry->loadArray($array['params']);
+			} else {
+				$registry = new JRegistry;
 			}
 			// TODO: convert to J!2.5: (string) $registry
 			$array['params'] = $registry->toString();

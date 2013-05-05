@@ -4,7 +4,7 @@
  * @package Kunena.Site
  * @subpackage Views
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -16,23 +16,38 @@ defined ( '_JEXEC' ) or die ();
 class KunenaViewCredits extends KunenaView {
 	function displayDefault($tpl = null) {
 
+		$this->intro = JText::sprintf('COM_KUNENA_CREDITS_INTRO', 'http://www.kunena.org/team');
+
 		$this->memberList = array(
-				array('name'=>'Matias', 'url'=>'http://www.kunena.org/forum/profile/63-matias', 'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPER')),
-				array('name'=>'coder4life', 'url'=>'http://www.kunena.org/forum/profile/10809-coder4life', 'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPER')),
-				array('name'=>'xillibit', 'url'=>'http://www.kunena.org/forum/profile/1288-xillibit', 'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPER')),
-				array('name'=>'fxstein', 'url'=>'http://www.kunena.org/forum/profile/64-fxstein', 'title'=>JText::sprintf('COM_KUNENA_CREDITS_DEVELOPER_SPECIAL', 'Yamaha Star VMax').' <a href="http://www.starVmax.com/forum/">www.starVmax.com/forum/</a>'),
-				array('name'=>'severdia', 'url'=>'http://www.kunena.org/forum/profile/114-severdia', 'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPER')),
-				array('name'=>'810', 'url'=>'http://www.kunena.org/forum/profile/634-810', 'title'=>JText::_('COM_KUNENA_CREDITS_CONTRIBUTOR')),
-				array('name'=>'svanschu', 'url'=>'http://www.kunena.org/forum/profile/2171-lda', 'title'=>JText::_('COM_KUNENA_CREDITS_CONTRIBUTOR')),
-				array('name'=>'LittleJohn', 'url'=>'http://www.kunena.org/forum/profile/10133-littlejohn', 'title'=>JText::_('COM_KUNENA_CREDITS_CONTRIBUTOR')),
-				array('name'=>'sozzled', 'url'=>'http://www.kunena.org/forum/profile/997-sozzled', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
-				array('name'=>'Mortti', 'url'=>'http://www.kunena.org/forum/profile/151-mortti', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
-				array('name'=>'Rich', 'url'=>'http://www.kunena.org/forum/profile/2198-rich', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
-				array('name'=>'GoremanX', 'url'=>'http://www.kunena.org/forum/profile/1362-goremanx', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
-				array('name'=>'CheechDogg', 'url'=>'http://www.kunena.org/forum/profile/9085-cheechdogg', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
-				array('name'=>'Jiminimonka', 'url'=>'http://www.kunena.org/forum/profile/26335-jiminimonka', 'title'=>JText::_('COM_KUNENA_CREDITS_MODERATOR')),
+				array('name'=>'Matias Griese', 'url'=>'http://www.kunena.org/forum/profile/63-matias',
+					'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPEMENT')),
+				array('name'=>'Florian Dal Fitto', 'url'=>'http://www.kunena.org/forum/profile/1288-xillibit',
+					'title'=>JText::_('COM_KUNENA_CREDITS_DEVELOPEMENT')),
+				array('name'=>'Joshua Weiss', 'url'=>'http://www.kunena.org/forum/profile/10809-coder4life',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_DESIGN'), JText::_('COM_KUNENA_CREDITS_DEVELOPEMENT'))),
+				array('name'=>'Jelle Kok', 'url'=>'http://www.kunena.org/forum/profile/634-810',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_DESIGN'), JText::_('COM_KUNENA_CREDITS_TESTING'))),
+				array('name'=>'Ron Severdia', 'url'=>'http://www.kunena.org/forum/profile/114-severdia',
+					'title'=>JText::_('COM_KUNENA_CREDITS_DESIGN')),
+				array('name'=>'Janich Rasmussen', 'url'=>'http://www.kunena.org/forum/profile/10133-littlejohn',
+					'title'=>JText::_('COM_KUNENA_CREDITS_CONTRIBUTION')),
+				array('name'=>'Sven Schultschik ', 'url'=>'http://www.kunena.org/forum/profile/2171-svanschu',
+					'title'=>JText::_('COM_KUNENA_CREDITS_LANGUAGES')),
+				array('name'=>'Michael Russell', 'url'=>'http://www.kunena.org/forum/profile/997-sozzled',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_MODERATION'), JText::_('COM_KUNENA_CREDITS_DOCUMENTATION'))),
+				array('name'=>'Richard Binder', 'url'=>'http://www.kunena.org/forum/profile/2198-rich',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_MODERATION'), JText::_('COM_KUNENA_CREDITS_TESTING'))),
+				array('name'=>'Sami Haaranen', 'url'=>'http://www.kunena.org/forum/profile/151-mortti',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_MODERATION'), JText::_('COM_KUNENA_CREDITS_TESTING'))),
+				array('name'=>'Joe Collins', 'url'=>'http://www.kunena.org/forum/profile/26335-jiminimonka',
+					'title'=>JText::sprintf('COM_KUNENA_CREDITS_X_AND_Y', JText::_('COM_KUNENA_CREDITS_MODERATION'), JText::_('COM_KUNENA_CREDITS_TESTING'))),
+				array('name'=>'Oliver Ratzesberger', 'url'=>'http://www.kunena.org/forum/profile/64-fxstein',
+					'title'=>JText::_('COM_KUNENA_CREDITS_FOUNDER')),
+
 		);
-		$this->thanks = JText::sprintf('COM_KUNENA_CREDITS_THANKS_PART_LONG', 'Beat', 'BoardBoss', 'madLyfe', 'infograf768','Joomla!', '<a href="http://www.kunena.org" target="_blank" rel="follow">www.kunena.org</a>').' '.JText::_('COM_KUNENA_CREDITS_THANKS');
+		$this->thanks = JText::sprintf('COM_KUNENA_CREDITS_THANKS', 'http://www.kunena.org/team#special_thanks',
+			'https://www.transifex.com/projects/p/Kunena', 'http://www.kunena.org',
+			'https://github.com/Kunena/Kunena-2.0/graphs/contributors');
 
 		$this->_prepareDocument();
 

@@ -4,7 +4,7 @@
  * @package Kunena.Plugins
  * @subpackage AlphaUserPoints
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -38,13 +38,20 @@ class KunenaProfileAlphaUserPoints extends KunenaProfile {
 
 	public function _getTopHits($limit=0) {
 		$db = JFactory::getDBO ();
-		$query = "SELECT userid AS id, profileviews AS count FROM #__alpha_userpoints WHERE profileviews>0 ORDER BY profileviews DESC";
+		$query = "SELECT a.userid AS id, a.profileviews AS count
+			FROM #__alpha_userpoints AS a
+			INNER JOIN #__users AS u ON u.id=a.userid
+			WHERE a.profileviews>0
+			ORDER BY a.profileviews DESC";
 		$db->setQuery ( $query, 0, $limit );
 		$top = (array) $db->loadObjectList ();
 		KunenaError::checkDatabaseError ();
 		return $top;
 	}
 
-	public function showProfile($view, &$params) {
+	public function showProfile($view, &$params) {}
+
+	public function getEditProfileURL($userid, $xhtml = true) {
+		return $this->getProfileURL($userid, $task = '', $xhtml = true);
 	}
 }

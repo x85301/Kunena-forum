@@ -4,7 +4,7 @@
  * @package Kunena.Framework
  * @subpackage HTML
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -17,7 +17,7 @@ abstract class KunenaHtmlParser {
 	public static function getEmoticons($grayscale = false, $emoticonbar = false) {
 		$db = JFactory::getDBO ();
 		$grayscale == true ? $column = "greylocation" : $column = "location";
-		$sql = "SELECT code, `$column` as file FROM #__kunena_smileys";
+		$sql = "SELECT code, {$db->quoteName($column)} AS file FROM #__kunena_smileys";
 
 		if ($emoticonbar == true)
 			$sql .= " WHERE emoticonbar='1'";
@@ -39,10 +39,11 @@ abstract class KunenaHtmlParser {
 		return $smileyArray;
 	}
 
+	/**
+	 * @deprecated 3.0.0
+	 */
 	public static function JSText($txt) {
-		$txt = JText::_($txt);
-		$txt = preg_replace('`\'`','\\\\\'', $txt);
-		return $txt;
+		return JText::_($txt, true);
 	}
 
 	public static function parseText($txt, $len=0) {

@@ -4,7 +4,7 @@
  * @package Kunena.Template.Blue_Eagle
  * @subpackage Topic
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -30,8 +30,9 @@ $goto .= '<a class="kbuttongoto" href="#forum'.$locations[$this->location].'" re
 			<?php echo $this->topicButtons->get('favorite') ?>
 			</div>
 		<?php endif ?>
-		<?php if ($this->topicButtons->get('delete') || $this->topicButtons->get('moderate') || $this->topicButtons->get('sticky') || $this->topicButtons->get('lock')) : ?>
+		<?php if ($this->topicButtons->get('undelete') || $this->topicButtons->get('delete') || $this->topicButtons->get('moderate') || $this->topicButtons->get('sticky') || $this->topicButtons->get('lock')) : ?>
 			<div class="kmessage-buttons-row">
+			<?php echo $this->topicButtons->get('undelete') ?>
 			<?php echo $this->topicButtons->get('delete') ?>
 			<?php echo $this->topicButtons->get('moderate') ?>
 			<?php echo $this->topicButtons->get('sticky') ?>

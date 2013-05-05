@@ -4,13 +4,16 @@
  * @package Kunena.Administrator.Template
  * @subpackage SyncUsers
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
 defined ( '_JEXEC' ) or die ();
+
+/** @var KunenaAdminViewTools $this */
 ?>
 
+<div id="kunena" class="admin override">
 	<div id="j-sidebar-container" class="span2">
 		<div id="sidebar">
 			<div class="sidebar-nav"><?php include KPATH_ADMIN.'/template/joomla30/common/menu.php'; ?></div>
@@ -67,7 +70,7 @@ defined ( '_JEXEC' ) or die ();
 			</fieldset>
 		</form>
 	</div>
-
-<div class="pull-right small">
-	<?php echo KunenaVersion::getLongVersionHTML(); ?>
+	<div class="pull-right small">
+		<?php echo KunenaVersion::getLongVersionHTML(); ?>
+	</div>
 </div>

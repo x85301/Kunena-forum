@@ -4,7 +4,7 @@
  * @package Kunena.Plugins
  * @subpackage Comprofiler
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -57,10 +57,18 @@ class KunenaProfileComprofiler extends KunenaProfile {
 
 	public function _getTopHits($limit=0) {
 		$db = JFactory::getDBO ();
-		$query = "SELECT user_id AS id, hits AS count FROM #__comprofiler WHERE hits>0 ORDER BY hits DESC";
+		$query = "SELECT cu.user_id AS id, cu.hits AS count
+			FROM #__comprofiler AS cu
+			INNER JOIN #__users AS u ON u.id=cu.user_id
+			WHERE cu.hits>0
+			ORDER BY cu.hits DESC";
 		$db->setQuery ( $query, 0, $limit );
 		$top = (array) $db->loadObjectList ();
 		KunenaError::checkDatabaseError();
 		return $top;
+	}
+
+	public function getEditProfileURL($userid, $xhtml = true) {
+		return cbSef( 'index.php?option=com_comprofiler&task=userDetails'. getCBprofileItemid(), $xhtml );
 	}
 }

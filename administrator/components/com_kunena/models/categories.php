@@ -51,29 +51,36 @@ class KunenaAdminModelCategories extends KunenaModel {
 			$value = 'desc';
 		$this->setState ( 'list.direction', $value );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.search', 'filter_search', '', 'string' );
+		$filter_active = '';
+
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.search', 'filter_search', '', 'string' );
 		$this->setState ( 'filter.search', $value );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.published', 'filter_published', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.published', 'filter_published', '', 'string' );
 		$this->setState ( 'filter.published', $value !== '' ? (int) $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.title', 'filter_title', '', 'string' );
+		$filter_active .=  $value = $this->getUserStateFromRequest ( $this->context.'.filter.title', 'filter_title', '', 'string' );
 		$this->setState ( 'filter.title', $value !== '' ? $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.type', 'filter_type', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.type', 'filter_type', '', 'string' );
 		$this->setState ( 'filter.type', $value !== '' ? $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.access', 'filter_access', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.access', 'filter_access', '', 'string' );
 		$this->setState ( 'filter.access', $value !== '' ? (int) $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.locked', 'filter_locked', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.locked', 'filter_locked', '', 'string' );
 		$this->setState ( 'filter.locked', $value !== '' ? (int) $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.review', 'filter_review', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.allow_polls', 'filter_allow_polls', '', 'string' );
+		$this->setState ( 'filter.allow_polls', $value !== '' ? (int) $value : null );
+
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.review', 'filter_review', '', 'string' );
 		$this->setState ( 'filter.review', $value !== '' ? (int) $value : null );
 
-		$value = $this->getUserStateFromRequest ( $this->context.'.filter.anonymous', 'filter_anonymous', '', 'string' );
+		$filter_active .= $value = $this->getUserStateFromRequest ( $this->context.'.filter.anonymous', 'filter_anonymous', '', 'string' );
 		$this->setState ( 'filter.anonymous', $value !== '' ? (int) $value : null );
+
+		$this->setState ( 'filter.active',!empty($filter_active));
 
 		// TODO: implement
 		$value = $this->getUserStateFromRequest ( $this->context.".filter.levels", 'levellimit', 10, 'int' );
@@ -102,6 +109,7 @@ class KunenaAdminModelCategories extends KunenaModel {
 				'filter_type'=>$this->getState ( 'filter.type'),
 				'filter_access'=>$this->getState ( 'filter.access'),
 				'filter_locked'=>$this->getState ( 'filter.locked'),
+				'filter_allow_polls'=>$this->getState ( 'filter.allow_polls'),
 				'filter_review'=>$this->getState ( 'filter.review'),
 				'filter_anonymous'=>$this->getState ( 'filter.anonymous'),
 				'action'=>'admin');
@@ -135,7 +143,7 @@ class KunenaAdminModelCategories extends KunenaModel {
 				// FIXME: stop creating access names manually
 				if ($category->accesstype == 'joomla.level') {
 					$groupname = $acl->getGroupName($category->accesstype, $category->access);
-					$category->accessname = JText::_('COM_KUNENA_INTEGRATION_JOOMLA_LEVEL').': '.($groupname ? $groupname : JText::_('COM_KUNENA_NOBODY'));
+					$category->accessname = $groupname ? $groupname : JText::_('COM_KUNENA_NOBODY');
 				} elseif ($category->accesstype != 'joomla.group') {
 					$category->accessname = JText::_('COM_KUNENA_INTEGRATION_TYPE_'.strtoupper(preg_replace('/[^\w\d]+/', '_', $category->accesstype))).': '.$acl->getGroupName($category->accesstype, $category->access);
 				} else {
@@ -151,6 +159,7 @@ class KunenaAdminModelCategories extends KunenaModel {
 				} else {
 					$category->admin_group = JText::_ ( $acl->getGroupName($category->accesstype, $category->admin_access ));
 				}
+
 				if ($this->me->isAdmin($category) && $category->isCheckedOut(0)) {
 					$category->editor = KunenaFactory::getUser($category->checked_out)->getName();
 				} else {

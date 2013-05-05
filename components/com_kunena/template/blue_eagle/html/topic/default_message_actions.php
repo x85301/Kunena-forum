@@ -4,7 +4,7 @@
  * @package Kunena.Template.Blue_Eagle
  * @subpackage Topic
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -62,7 +62,7 @@ if ($this->message->modified_time) {
 <?php if(!empty($this->thankyou)): ?>
 <div class="kmessage-thankyou">
 <?php
-	echo JText::_('COM_KUNENA_THANKYOU').': '.$this->thankyou.' ';
+	echo JText::_('COM_KUNENA_THANKYOU').': '.implode(', ', $this->thankyou).' ';
 	if ($this->more_thankyou) echo JText::sprintf('COM_KUNENA_THANKYOU_MORE_USERS',$this->more_thankyou);
 ?>
 </div>

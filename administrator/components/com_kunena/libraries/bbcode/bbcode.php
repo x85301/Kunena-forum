@@ -4,32 +4,33 @@
  * @package Kunena.Framework
  * @subpackage BBCode
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
 defined ( '_JEXEC' ) or die ();
 
-require_once KPATH_ADMIN . '/libraries/external/nbbc/nbbc.php';
+require_once KPATH_FRAMEWORK . '/external/nbbc/nbbc.php';
 jimport('joomla.utilities.string');
 
 // TODO: add possibility to hide contents from these tags:
 // [hide], [confidential], [spoiler], [attachment], [code]
 
 /**
- * Kunena BBCode Class
+ * Class KunenaBbcode
  *
- * @version		2.0
+ * @since   2.0
  */
 class KunenaBbcode extends NBBC_BBCode {
 	public $autolink_disable = 0;
 
-	/**
-	 * Object Constructor
-	 *
-	 * @return	void
-	 */
-	function __construct($relative = true) {
+    /**
+     * Use KunenaBbcode::getInstance() instead.
+     *
+     * @param bool $relative
+     * @internal
+     */
+    public function __construct($relative = true) {
 		parent::__construct ();
 
 		$this->defaults = new KunenaBbcodeLibrary;
@@ -55,7 +56,13 @@ class KunenaBbcode extends NBBC_BBCode {
 	 * @return	KunenaBbcode
 	 * @since	1.7
 	 */
-	public static function getInstance($relative = true) {
+    /**
+     * Get global instance from BBCode parser.
+     *
+     * @param bool $relative
+     * @return mixed
+     */
+    public static function getInstance($relative = true) {
 		static $instance = false;
 		if (!isset($instance[intval($relative)])) {
 			$instance[intval($relative)] = new KunenaBbcode ($relative);
@@ -64,23 +71,29 @@ class KunenaBbcode extends NBBC_BBCode {
 		return $instance[intval($relative)];
 	}
 
-	public function parseUrl($params) {
+    /**
+     * @param $params
+     * @return string
+     */
+    public function parseUrl($params) {
 		$url = $params['url'];
 		$text = $params['text'];
 
-		if (preg_match('#^mailto:#ui', $url)) {
-			// Cloak email addresses
-			$email = substr($text, 7);
-			return JHtml::_('email.cloak', $email, $this->IsValidEmail($email));
-		}
-
-		// Remove http(s):// from the text
-		$text = preg_replace ( '#^http(s?)://#ui', '', $text );
-
 		$config = KunenaFactory::getConfig ();
-		if ($config->trimlongurls) {
-			// shorten URL text if they are too long
-			$text = preg_replace ( '#^(.{' . $config->trimlongurlsfront . '})(.{4,})(.{' . $config->trimlongurlsback . '})$#u', '\1...\3', $text );
+		if ($config->autolink) {
+			if (preg_match('#^mailto:#ui', $url)) {
+				// Cloak email addresses
+				$email = substr($text, 7);
+				return JHtml::_('email.cloak', $email, $this->IsValidEmail($email));
+			}
+
+			// Remove http(s):// from the text
+			$text = preg_replace ( '#^http(s?)://#ui', '', $text );
+
+			if ($config->trimlongurls) {
+				// shorten URL text if they are too long
+				$text = preg_replace ( '#^(.{' . $config->trimlongurlsfront . '})(.{4,})(.{' . $config->trimlongurlsback . '})$#u', '\1...\3', $text );
+			}
 		}
 
 		if (!isset($params['query'])) $params['query'] = '';
@@ -143,10 +156,19 @@ class KunenaBbcode extends NBBC_BBCode {
 			}
 		}
 
-		return "<a class=\"bbcode_url\" href=\"{$url}\" target=\"_blank\" rel=\"nofollow\">{$text}</a>";
+		if ($config->autolink) {
+			return "<a class=\"bbcode_url\" href=\"{$url}\" target=\"_blank\" rel=\"nofollow\">{$text}</a>";
+		}
+
+		// Auto-linking has been disabled.
+		return $text;
 	}
 
-	function Internal_AutoDetectURLs($string) {
+    /**
+     * @param $string
+     * @return array
+     */
+    function Internal_AutoDetectURLs($string) {
 		$search = preg_split('/(?xi)
 		\b
 		(
@@ -154,8 +176,6 @@ class KunenaBbcode extends NBBC_BBCode {
 				(?:https?|ftp):\/\/
 				|
 				www\d{0,3}\.
-				|
-				[a-z0-9\.\-]+\.[a-z]{2,4}\/
 				|
 				mailto:
 				|
@@ -189,8 +209,7 @@ class KunenaBbcode extends NBBC_BBCode {
 
 				// We have a full, complete, and properly-formatted URL, with protocol.
 				// Now we need to apply the $this->url_pattern template to turn it into HTML.
-				// TODO: report Joomla bug (silence it for now)
-				$params = $this->parse_url($url);
+				$params = JString::parse_url($url);
 				if (!$invalid && substr($url, 0, 7) == 'mailto:') {
 					$email = JString::substr($url, 7);
 					$output[$index] = JHtml::_('email.cloak', $email, $this->IsValidEmail($email));
@@ -224,38 +243,6 @@ class KunenaBbcode extends NBBC_BBCode {
 		if ($email_too && substr($string, 0, 7) == "mailto:") return $this->IsValidEmail(substr($string, 7));
 		if (preg_match($re, $string)) return true;
 		return false;
-	}
-
-
-	/**
-	 * @see JString::parse_url()
-	 * @todo remove when dropping J!1.5 support
-	 * FYI: there's a bug in J!2.5.6 which has been fixed in GitHub
-	 */
-	public static function parse_url($url)
-	{
-		$result = false;
-
-		// Build arrays of values we need to decode before parsing
-		$entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%23', '%5B', '%5D');
-		$replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "#", "[", "]");
-
-		// Create encoded URL with special URL characters decoded so it can be parsed
-		// All other characters will be encoded
-		$encodedURL = str_replace($entities, $replacements, urlencode($url));
-
-		// Parse the encoded URL
-		$encodedParts = parse_url($encodedURL);
-
-		// Now, decode each value of the resulting array
-		if ($encodedParts)
-		{
-			foreach ($encodedParts as $key => $value)
-			{
-				$result[$key] = urldecode(str_replace($replacements, $entities, $value));
-			}
-		}
-		return $result;
 	}
 }
 
@@ -869,6 +856,8 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 				$target = " target=\"" . htmlspecialchars ( $params ['target'] ) . "\"";
 			elseif ($bbcode->url_target !== false)
 				$target = " target=\"" . htmlspecialchars ( $bbcode->url_target ) . "\"";
+			else
+				$target = '';
 			return '<a href="' . htmlspecialchars ( $url ) . '" class="bbcode_url" rel="nofollow"' . $target . '>' . $content . '</a>';
 		}
 		return htmlspecialchars ( $params ['_tag'] ) . $content . htmlspecialchars ( $params ['_endtag'] );
@@ -927,12 +916,12 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 		}
 
 		// Choose a list element (<ul> or <ol>) and a style.
+		$type = '';
+		$elem = 'ul';
 		if (! is_string ( $default ) || strlen ( $default ) == "") {
 			$elem = 'ul';
-			$type = '';
 		} else if ($default == '1') {
 			$elem = 'ol';
-			$type = '';
 		} else if (isset ( $list_styles [$default] )) {
 			$elem = 'ol';
 			$type = $list_styles [$default];
@@ -1071,7 +1060,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 				 		map: $mapid
 					});
 				} else {
-					var contentString = '<p><strong>".KunenaHtmlParser::JSText('COM_KUNENA_GOOGLE_MAP_NO_GEOCODE')." <i>".json_encode($content)."</i></strong></p>';
+					var contentString = '<p><strong>".JText::_('COM_KUNENA_GOOGLE_MAP_NO_GEOCODE', true)." <i>".json_encode($content)."</i></strong></p>';
 					var infowindow$mapid = new google.maps.InfoWindow({ content: contentString });
 						infowindow$mapid.open($mapid);
 				}
@@ -1082,7 +1071,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 		// ]]>"
 		);
 
-		return '<div id="'.$mapid.'" class="kgooglemap">'.KunenaHtmlParser::JSText('COM_KUNENA_GOOGLE_MAP_NOT_VISIBLE').'</div>';
+		return '<div id="'.$mapid.'" class="kgooglemap">'.JText::_('COM_KUNENA_GOOGLE_MAP_NOT_VISIBLE', true).'</div>';
 	}
 
 	function DoEbay($bbcode, $action, $name, $default, $params, $content) {
@@ -1349,7 +1338,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 		'wideo.fr' => array ('flash', 400, 368, 0, 0, 'http://www.wideo.fr/p/fr/%vcode%.html', '\/([\w-]*).html', array (array (6, 'wmode', 'transparent' ) ) ),
 
 		'youtube' => array ('flash', 425, 355, 0, 0, 'http://www.youtube.com/v/%vcode%?fs=1&hd=0&rel=1&cc_load_policy=1', '\/watch\?v=([\w\-]*)' , array (array (6, 'wmode', 'transparent' ) ) ),
-				
+
 		'youku' => array ('flash', 425, 355, 0, 0, 'http://player.youku.com/player.php/Type/Folder/Fid/18787874/Ob/1/sid/%vcode%/v.swf', '\/watch\?v=([\w\-]*)' , array (array (6, 'wmode', 'transparent' ) ) ),
 
 		// Cannot allow public flash objects as it opens up a whole set of vulnerabilities through hacked flash files
@@ -1617,7 +1606,7 @@ class KunenaBbcodeLibrary extends BBCodeLibrary {
 					$attachment = $att;
 					unset ( $attachments [$att->id] );
 					$bbcode->parent->inline_attachments [$attachment->id] = $attachment;
-					return "<div class=\"kmsgimage\">{$attachment->imagelink}</div>";
+					return "<div class=\"kmsgimage\">{$attachment->getImageLink()}</div>";
 				}
 			}
 			// No match -- assume that we have normal img tag

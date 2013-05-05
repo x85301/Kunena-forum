@@ -1,7 +1,7 @@
 <?php
 /**
  * Kunena Component
- * @package Kunena.Template.Strapless
+ * @package Kunena.Template.Crypsis
  * @subpackage Topic
  *
  * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
@@ -60,17 +60,17 @@ $this->k=0;
           </div>
           <?php endif; ?>
           <div class="control-group" id="kanynomous-check-name"
-		<?php if ( $this->me->userid && !$this->category->allow_anonymous ): ?>style="display:none;"<?php endif; ?>>
+						<?php if ( $this->me->userid && !$this->category->allow_anonymous ): ?>style="display:none;"<?php endif; ?>>
             <label class="control-label"><?php echo JText::_('COM_KUNENA_GEN_NAME'); ?></label>
             <div class="controls">
-              <input type="text" id="kauthorname" name="authorname" size="35" class="kinputbox postinput required" maxlength="35" value="<?php echo $this->escape($this->message->name);?>" />
+              <input type="text" id="kauthorname" name="authorname" size="35" class="input-xxlarge required" maxlength="35" value="<?php echo $this->escape($this->message->name);?>" />
             </div>
           </div>
           <?php if ($this->config->askemail && !$this->me->userid) : ?>
           <div class="control-group">
             <label class="control-label"><?php echo JText::_('COM_KUNENA_GEN_EMAIL');?></label>
             <div class="controls">
-              <input type="text" id="email" name="email"  size="35" class="kinputbox postinput required validate-email" maxlength="35" value="<?php echo !empty($this->message->email) ? $this->escape($this->message->email) : '' ?>" />
+              <input type="text" id="email" name="email"  size="35" class="input-xxlarge required validate-email" maxlength="35" value="<?php echo !empty($this->message->email) ? $this->escape($this->message->email) : '' ?>" />
               <br />
               <?php echo $this->config->showemail == '0' ? JText::_('COM_KUNENA_POST_EMAIL_NEVER') : JText::_('COM_KUNENA_POST_EMAIL_REGISTERED'); ?> </div>
           </div>
@@ -78,8 +78,7 @@ $this->k=0;
           <div class="control-group">
             <label class="control-label"><?php echo JText::_('COM_KUNENA_GEN_SUBJECT'); ?></label>
             <div class="controls">
-              <input type="text" class="kinputbox postinput required" name="subject" id="subject" size="35"
-				maxlength="<?php echo $this->escape($this->config->maxsubject); ?>" value="<?php echo $this->escape($this->message->subject); ?>" tabindex="1" />
+              <input class="input-xxlarge required" type="text" placeholder="Subject" name="subject" id="subject" maxlength="<?php echo $this->escape($this->config->maxsubject); ?>" value="<?php echo $this->escape($this->message->subject); ?>" tabindex="1" />
             </div>
           </div>
           <?php if (!empty($this->topicIcons)) : ?>
@@ -95,19 +94,20 @@ $this->k=0;
           </div>
           <?php endif; ?>
           <?php
-		// Show bbcode editor
-		$this->displayTemplateFile('topic', 'edit', 'editor');
-	?>
+					// Show bbcode editor
+					$this->displayTemplateFile('topic', 'edit', 'editor');
+					?>
           <?php if ($this->allowedExtensions) : ?>
-          <div class="control-group">
-            <label class="control-label"><?php echo JText::_('COM_KUNENA_EDITOR_ATTACHMENTS') ?></label>
+          <div class="control-group krow<?php echo 1 + $this->k^=1;?>" id="kpost-attachments">
+            <label class="control-label"><?php echo JText::_('COM_KUNENA_EDITOR_ATTACHMENTS'); ?></label>
             <div class="controls">
               <div id="kattachment-id" class="kattachment"> <span class="kattachment-id-container"></span>
                 <input class="kfile-input-textbox" type="text" readonly="readonly" />
                 <div class="kfile-hide hasTip" title="<?php echo JText::_('COM_KUNENA_FILE_EXTENSIONS_ALLOWED')?>::<?php echo $this->escape(implode(', ', $this->allowedExtensions)) ?>" >
+                  <input type="button" value="<?php echo  JText::_('COM_KUNENA_EDITOR_ADD_FILE'); ?>" class="kfile-input-button btn" />
                   <input id="kupload" class="kfile-input" name="kattachment" type="file" />
                 </div>
-                <a href="#" class="kattachment-remove kbutton" style="display: none"><?php echo  JText::_('COM_KUNENA_GEN_REMOVE_FILE'); ?></a> <a href="#" class="kattachment-insert kbutton" style="display: none"><?php echo  JText::_('COM_KUNENA_EDITOR_INSERT'); ?></a> </div>
+                <a href="#" class="kattachment-remove btn" style="display: none"><?php echo  JText::_('COM_KUNENA_GEN_REMOVE_FILE'); ?></a> <a href="#" class="kattachment-insert btn" style="display: none"><?php echo  JText::_('COM_KUNENA_EDITOR_INSERT'); ?></a> </div>
               <?php $this->displayAttachments($this->message); ?>
             </div>
           </div>
@@ -145,16 +145,16 @@ $this->k=0;
           <?php endif; ?>
           <div class="center">
             <input type="submit" name="ksubmit" class="btn btn-primary"
-				value="<?php echo (' ' . JText::_('COM_KUNENA_SUBMIT') . ' ');?>"
-				title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_SUBMIT'));?>" tabindex="4" />
+						value="<?php echo (' ' . JText::_('COM_KUNENA_SUBMIT') . ' ');?>"
+						title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_SUBMIT'));?>" tabindex="4" />
             <input type="button" name="preview" class="btn"
-				onclick="kToggleOrSwapPreview('kbbcode-preview-bottom')"
-				value="<?php echo (' ' . JText::_('COM_KUNENA_PREVIEW') . ' ');?>"
-				title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_PREVIEW'));?>:: "tabindex="3" />
+						onclick="kToggleOrSwapPreview('kbbcode-preview-bottom')"
+						value="<?php echo (' ' . JText::_('COM_KUNENA_PREVIEW') . ' ');?>"
+						title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_PREVIEW'));?>:: "tabindex="3" />
             <input type="button" name="cancel" class="btn"
-				value="<?php echo (' ' . JText::_('COM_KUNENA_CANCEL') . ' ');?>"
-				onclick="javascript:window.history.back();"
-				title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_CANCEL'));?>" tabindex="5" />
+						value="<?php echo (' ' . JText::_('COM_KUNENA_CANCEL') . ' ');?>"
+						onclick="javascript:window.history.back();"
+						title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_CANCEL'));?>" tabindex="5" />
           </div>
         </fieldset>
       </div>

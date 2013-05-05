@@ -4,7 +4,7 @@
  * @package Kunena.Plugins
  * @subpackage Kunena
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -38,7 +38,11 @@ class KunenaProfileKunena extends KunenaProfile {
 
 	public function _getTopHits($limit=0) {
 		$db = JFactory::getDBO ();
-		$query = "SELECT userid AS id, uhits AS count FROM #__kunena_users WHERE uhits>0 ORDER BY uhits DESC";
+		$query = "SELECT u.id, ku.uhits AS count
+			FROM #__kunena_users AS ku
+			INNER JOIN #__users AS u ON u.id=ku.userid
+			WHERE ku.uhits>0
+			ORDER BY ku.uhits DESC";
 		$db->setQuery ( $query, 0, $limit );
 		$top = (array) $db->loadObjectList ();
 		KunenaError::checkDatabaseError();
@@ -46,4 +50,8 @@ class KunenaProfileKunena extends KunenaProfile {
 	}
 
 	public function showProfile($view, &$params) {}
+
+	public function getEditProfileURL($userid, $xhtml = true) {
+		return $this-> getProfileURL($userid, 'edit', $xhtml = true);
+	}
 }
