@@ -4,7 +4,7 @@
  * @package Kunena.Framework
  * @subpackage Forum.Message.Rate
  *
- * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
+ * @copyright (C) 2008 - 2013 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @link http://www.kunena.org
  **/
@@ -40,7 +40,7 @@ class KunenaForumTopicRate extends JObject
      */
     static public function getInstance($identifier = null, $reload = false)
     {
-        return KunenaForumMessageRateHelper::get($identifier, $reload);
+        return KunenaForumTopicRateHelper::get($identifier, $reload);
     }
 
     /**

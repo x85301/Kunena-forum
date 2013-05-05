@@ -485,13 +485,13 @@ class KunenaViewTopic extends KunenaView {
 	}
 
 	function displayRating() {
-		if (!$this->config->ratingenabled || !$this->category->allow_ratings) {
+		if (! $this->me->userid || !$this->config->ratingenabled || !$this->category->allow_ratings) {
 			return false;
 		}
 
 		$this->rating = $this->get('Rating');
 
-		echo $this->loadTemplateFile("rating");
+		echo $this->loadTemplateFile('rating');
 	}
 
 	function displayMessageProfile() {

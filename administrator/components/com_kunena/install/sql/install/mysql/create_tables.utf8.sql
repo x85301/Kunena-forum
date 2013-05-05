@@ -199,6 +199,13 @@ CREATE TABLE IF NOT EXISTS `#__kunena_ranks` (
 	`rank_image` varchar(255) NOT NULL default '',
 	PRIMARY KEY (rank_id) ) DEFAULT CHARACTER SET utf8;
 
+CREATE TABLE IF NOT EXISTS `#__kunena_rate` (
+	`topicid` int(11) NULL,
+	`userid` int(11) NULL,
+	`rate` mediumint(8) unsigned NOT NULL default '0',
+	`time`  DATETIME NOT NULL,
+	UNIQUE KEY  `topicid` (topicid,userid) ) DEFAULT CHARACTER SET utf8;
+
 CREATE TABLE IF NOT EXISTS `#__kunena_sessions` (
 	`userid` int(11) NOT NULL default '0',
 	`allowed` text NULL,
