@@ -28,4 +28,25 @@ class KunenaViewTopic extends KunenaView {
 
 		echo json_encode( $response );
 	}
+
+	function displayRate($tpl = null) {
+		$starid = $this->app->input->get('starid',0,'int');
+		$topicid = $this->app->input->get('topicid',0,'int');;
+
+		if ($this->me->exists() || $this->config->ratingenabled) {
+			$rate = KunenaForumTopicRateHelper::get($topicid);
+
+			$activityIntegration = KunenaFactory::getActivityIntegration();
+			if (!$rate->save($this->me) && JFactory::getApplication()->input->get('type') != 'ajax') {
+				$this->app->enqueueMessage($rate->getError());
+				$this->redirectBack();
+			}
+			$activityIntegration->onAfterRate($this->me->userid, $topic);
+		}
+
+		// Set the MIME type and header for JSON output.
+		$this->document->setMimeEncoding( 'application/json' );
+
+		echo json_encode( $response );
+	}
 }

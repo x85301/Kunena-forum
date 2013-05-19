@@ -2,7 +2,7 @@
 /**
  * Kunena Component
  * @package Kunena.Framework
- * @subpackage Forum.Topic.Poll
+ * @subpackage Forum.Topic.Rate
  *
  * @copyright (C) 2008 - 2012 Kunena Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
@@ -22,7 +22,7 @@ abstract class KunenaForumTopicRateHelper
      *
      * @access    public
      * @param    identifier        The topic to load - Can be only an integer.
-     * @return    KunenaForumTopicRate        The poll object.
+     * @return    KunenaForumTopicRate        The rate object.
      * @since    2.0
      */
     static public function get($identifier = null, $reload = false)
@@ -36,7 +36,7 @@ abstract class KunenaForumTopicRateHelper
 
         if ($reload || empty (self::$_instances [$id])) {
             unset(self::$_instances [$id]);
-            self::loadMessages(array($id));
+            self::loadTopics(array($id));
         }
 
         return self::$_instances [$id];
@@ -44,9 +44,9 @@ abstract class KunenaForumTopicRateHelper
 
     /**
      * Load users who have rate listed topics
-     * @param array $ids List of message IDs
+     * @param array $ids List of topics IDs
      */
-    static protected function loadMessages($ids)
+    static protected function loadTopics($ids)
     {
         foreach ($ids as $i => $id) {
             $id = intval($id);
@@ -68,7 +68,7 @@ abstract class KunenaForumTopicRateHelper
         KunenaError::checkDatabaseError();
 
         foreach ($ids as $id) {
-            self::$_instances [$id] = new KunenaForumTopicRate($id);
+            self::$_instances [$id] = KunenaForumTopicHelper::get($id);
         }
         foreach ($results as $result) {
             self::$_instances [$result->topicid]->_add($result->userid, $result->time);

@@ -32,8 +32,7 @@ class KunenaTemplateBlue_Eagle extends KunenaTemplate {
 		KunenaTemplateLegacy::load();
 
 		require_once JPATH_SITE. '/' . $this->getFile('initialize.php');
-		$this->addStyleSheet ( 'css/kunena.20.css' )
-            ->addScript( 'components/com_kunena/template/blue_eagle/js/rating.js');
+		$this->addStyleSheet ( 'css/kunena.20.css' );
 
 		// Toggler language strings
 		JFactory::getDocument()->addScriptDeclaration('// <![CDATA[

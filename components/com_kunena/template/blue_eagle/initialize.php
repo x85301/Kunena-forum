@@ -25,6 +25,8 @@ if ( KunenaFactory::getConfig()->lightbox == 1 ) {
 // New Kunena JS for default template
 $template->addScript ( 'js/default.js' );
 
+$template->addScript( 'js/rating.js');
+
 $rtl = JFactory::getLanguage()->isRTL();
 $skinner = $template->params->get('enableSkinner', 0);
 

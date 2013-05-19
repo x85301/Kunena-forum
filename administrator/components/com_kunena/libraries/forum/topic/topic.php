@@ -68,7 +68,7 @@ class KunenaForumTopic extends KunenaDatabaseObject {
 			'subscribe'=>array('Read'),
 			'sticky'=>array('Read'),
 			'lock'=>array('Read'),
-            'rate'=>array('Read', 'Unlocked'),
+			'rate'=>array('Read', 'Unlocked'),
 			'poll.read'=>array('Read'),
 			'poll.create'=>array('Own'),
 			'poll.edit'=>array('Read','Own','NoVotes'),
@@ -1244,7 +1244,6 @@ class KunenaForumTopic extends KunenaDatabaseObject {
 
 		return true;
 	}
-
 
 	// Internal functions
 
