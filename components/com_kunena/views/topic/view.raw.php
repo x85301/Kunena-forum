@@ -31,15 +31,18 @@ class KunenaViewTopic extends KunenaView {
 
 	function displayRate($tpl = null) {
 		$starid = $this->app->input->get('starid',0,'int');
-		$topicid = $this->app->input->get('topicid',0,'int');;
+		$topicid = $this->app->input->get('topicid',0,'int');
+		$response = array();
 
 		if ($this->me->exists() || $this->config->ratingenabled) {
 			$rate = KunenaForumTopicRateHelper::get($topicid);
+			$rate->stars = $starid;
+
+			$topic = KunenaForumTopicHelper::get($topicid);
 
 			$activityIntegration = KunenaFactory::getActivityIntegration();
-			if (!$rate->save($this->me) && JFactory::getApplication()->input->get('type') != 'ajax') {
-				$this->app->enqueueMessage($rate->getError());
-				$this->redirectBack();
+			if (!$rate->save($this->me)) {
+				$rate->getError();
 			}
 			$activityIntegration->onAfterRate($this->me->userid, $topic);
 		}
