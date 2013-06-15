@@ -17,6 +17,43 @@ function hideMessage() {
 	div.style.display = "none";
 }
 
+jQuery(document).ready(function() { 
+	jQuery('#kbbcode-message').atwho({
+		at: "@", 
+		tpl: '<li data-value="${id}"><i class="icon-user"></i>${name} <small>${username}</small></li>',
+		limit: 7, 
+		callbacks: {
+			remote_filter: function(query, callback)  {
+				jQuery.ajax({
+					url: jQuery( "#kurl_mention" ).val(),
+					data: {
+						search : query
+					},
+					success: function(data) {
+						callback(data.names);
+					}
+				});
+			}
+		}
+	}).atwho({
+		at: ":",
+		tpl:"<li data-value='${key}'>${name} <img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' /></li>",
+		callbacks: {
+			remote_filter: function(query, callback)  {
+				jQuery.ajax({
+					url: jQuery( "#kurl_emojis" ).val(),
+					data: {
+						search : query
+					},
+					success: function(data) {
+						callback(data.emojis);
+					}
+				});
+			}
+		}
+	});
+});
+
 window.addEvent('domready', function(){	
 	$$('.kspoiler').each(function(el){
 		var contentElement = el.getElement('.kspoiler-content');

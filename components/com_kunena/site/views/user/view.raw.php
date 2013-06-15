@@ -29,4 +29,25 @@ class KunenaViewUser extends KunenaView {
 
 		echo json_encode( $response );
 	}
+
+	function displayListMention($tpl=null) {
+		$response['names'] = array();
+		if ($this->me->exists()) {
+			$users = $this->get ( 'Items' );
+				foreach ($users as $user) {
+					//if ($this->config->username)
+					$name['id'] = $user->id;
+					$name['name'] = $user->name;
+					$name['username'] = $user->username;
+
+					$response['names'][] = $name;
+			}
+		}
+
+		// Set the MIME type and header for JSON output.
+		$this->document->setMimeEncoding( 'application/json' );
+		JResponse::setHeader( 'Content-Disposition', 'attachment; filename="'.$this->getName().'.'.$this->getLayout().'.json"' );
+
+		echo json_encode($response);
+	}
 }

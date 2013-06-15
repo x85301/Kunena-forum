@@ -41,6 +41,10 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 		$this->loadMootools();
 		JHtml::_('behavior.tooltip');
 
+		JHtml::_('jquery.framework');
+		$this->addScript ( 'js/atwho.js' );
+		$this->addStyleSheet ( 'css/atwho.css' );
+
 		// New Kunena JS for default template
 		$this->addScript ( 'js/plugins.js' );
 

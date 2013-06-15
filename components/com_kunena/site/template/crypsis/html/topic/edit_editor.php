@@ -225,17 +225,7 @@ defined ( '_JEXEC' ) or die ();
 		}
 
 if (!$this->config->disemoticons) : ?>
-	<div class="control-group">
-		<label class="control-label">Emoticons</label>
-		<div class="controls">
-			<?php
-			$emoticons = KunenaHtmlParser::getEmoticons(0, 1);
-			foreach ( $emoticons as $emo_code=>$emo_url ) {
-				echo '<img class="btnImage" src="' . $emo_url . '" border="0" alt="' . $emo_code . ' " title="' . $emo_code . ' " onclick="kbbcode.focus().insert(\' '. $emo_code .' \', \'after\', false);" style="cursor:pointer"/> ';
-			}
-			?>
-		</div>
-	</div>
+
 <?php endif; ?>
 
 <!-- end of extendable secondary toolbar -->
@@ -252,6 +242,8 @@ if (!$this->config->disemoticons) : ?>
 		style="cursor: pointer"><?php echo JText::_('COM_KUNENA_EDITOR_SHRINK'); ?></span></div>
 	<div class="controls">
 		<textarea class="input-xxlarge required" name="message" id="kbbcode-message" rows="12" tabindex="3"><?php echo $this->escape($this->message->message); ?></textarea>
+		<input type="hidden" id="kurl_mention" name="kurl_mention" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>" />
+		<input type="hidden" id="kurl_emoji" name="kurl_emoji" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>" />
 	</div>
 </div>
 

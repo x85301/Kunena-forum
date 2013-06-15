@@ -28,4 +28,31 @@ class KunenaViewTopic extends KunenaView {
 
 		echo json_encode( $response );
 	}
+
+	function displayListEmoji($tpl = null) {
+		$response = array();
+		if ($this->me->exists() ) {
+			$search = $this->app->input->get('search');
+
+			$db = JFactory::getDBO ();
+			$kquery = new KunenaDatabaseQuery();
+			$kquery->select('*')->from("{$db->qn('#__kunena_smileys')}")->where("code LIKE '%{$db->escape($search)}%'");
+			$db->setQuery ( $kquery );
+			$smileys = $db->loadObjectList ();
+			KunenaError::checkDatabaseError();
+
+			foreach($smileys as $smiley) {
+				$emojis['key'] = $smiley->key;
+				$emojis['name'] = $smiley->name;
+
+				$response['emojis'][] = $emojis;
+			}
+		}
+
+		// Set the MIME type and header for JSON output.
+		$this->document->setMimeEncoding( 'application/json' );
+		JResponse::setHeader( 'Content-Disposition', 'attachment; filename="'.$this->getName().'.'.$this->getLayout().'.json"' );
+
+		echo json_encode( $response );
+	}
 }

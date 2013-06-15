@@ -26,7 +26,7 @@ class KunenaModelUser extends KunenaModel {
 		$config = KunenaFactory::getConfig();
 
 		// TODO: create state for item
-		if ($layout != 'list') {
+		if ($layout != 'list' && $layout != 'listmention') {
 			return;
 		}
 
