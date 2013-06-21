@@ -14,13 +14,9 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.keepalive');
 
+include_once (KPATH_SITE.'/lib/kunena.bbcode.string.php');
+
 $this->document->addScriptDeclaration('config_attachment_limit = '.$this->config->attachment_limit );
-
-$editor = KunenaBbcodeEditor::getInstance();
-$editor->initialize('id');
-
-include_once (KPATH_SITE.'/lib/kunena.bbcode.js.php');
-include_once (KPATH_SITE.'/lib/kunena.special.js.php');
 
 $this->k=0;
 ?>
@@ -44,7 +40,7 @@ $this->k=0;
         <fieldset class="pull-left">
           <legend><?php echo $this->escape($this->title)?></legend>
           <?php if (isset($this->selectcatlist)): ?>
-          <div class="control-group"> 
+          <div class="control-group">
             <!-- Username -->
             <label class="control-label"><?php echo JText::_('COM_KUNENA_CATEGORY')?></label>
             <div class="controls"> <?php echo $this->selectcatlist?> </div>
@@ -147,10 +143,6 @@ $this->k=0;
             <input type="submit" name="ksubmit" class="btn btn-primary"
 						value="<?php echo (' ' . JText::_('COM_KUNENA_SUBMIT') . ' ');?>"
 						title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_SUBMIT'));?>" tabindex="4" />
-            <input type="button" name="preview" class="btn"
-						onclick="kToggleOrSwapPreview('kbbcode-preview-bottom')"
-						value="<?php echo (' ' . JText::_('COM_KUNENA_PREVIEW') . ' ');?>"
-						title="<?php echo (JText::_('COM_KUNENA_EDITOR_HELPLINE_PREVIEW'));?>:: "tabindex="3" />
             <input type="button" name="cancel" class="btn"
 						value="<?php echo (' ' . JText::_('COM_KUNENA_CANCEL') . ' ');?>"
 						onclick="javascript:window.history.back();"

@@ -41,6 +41,11 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 		$this->loadMootools();
 		JHtml::_('behavior.tooltip');
 
+		JHtml::_('jquery.framework');
+
+		$this->addStyleSheet ( 'css/wbbtheme.css' );
+		$this->addScript ( 'js/jquery.wysibb.js' );
+
 		// New Kunena JS for default template
 		$this->addScript ( 'js/plugins.js' );
 
