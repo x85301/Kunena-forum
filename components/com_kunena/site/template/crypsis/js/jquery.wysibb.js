@@ -2,7 +2,6 @@
 * http://www.wysibb.com
 * Copyright (c) 2013 Vadim Dobroskok; Licensed MIT, GPL */
 
-// Set false on production
 wbbdebug=true;
 (function($) {
 	'use strict';
@@ -73,8 +72,8 @@ wbbdebug=true;
 					buttonHTML: '<span class="fonticon fi-stroke1 ve-tlb-strike1">\uE003</span>',
 					excmd: 'strikeThrough',
 					transform : {
-						'<strike>{SELTEXT}</strike>':"[s]{SELTEXT}[/s]",
-						'<s>{SELTEXT}</s>':"[s]{SELTEXT}[/s]"
+						'<strike>{SELTEXT}</strike>':"[strike]{SELTEXT}[/strike]",
+						'<s>{SELTEXT}</s>':"[strike]{SELTEXT}[/strike]"
 					}
 				},
 				sup : {
@@ -125,19 +124,16 @@ wbbdebug=true;
 							{
 								title: CURLANG.modal_img_tab1,
 								input: [
-									{param: "SRC",title:CURLANG.modal_imgsrc_text,validation: '^http(s)?://.*?\.(jpg|png|gif|jpeg)$'}
+									{param: "SRC",title:CURLANG.modal_imgsrc_text,validation: '^http(s)?://.*?\.(jpg|png|gif|jpeg)$'},
+                  {param: "SIZE",title:CURLANG.modal_imgsrc_size}
 								]
-							},
-							{
-								title: CURLANG.modal_img_tab2,
-								html: '<div id="imguploader"> <form id="fupform" class="upload" action="{img_uploadurl}" method="post" enctype="multipart/form-data" target="fupload"><input type="hidden" name="iframe" value="1"/><input type="hidden" name="idarea" value="'+id+'" /><div class="fileupload"><input id="fileupl" class="file" type="file" name="img" /><button id="nicebtn" class="wbb-button">'+CURLANG.modal_img_btn+'</button> </div> </form> </div><iframe id="fupload" name="fupload" src="about:blank" frameborder="0" style="width:0px;height:0px;display:none"></iframe></div>'
 							}
 						],
 						onLoad: this.imgLoadModal
 					},
 					transform : {
 						'<img src="{SRC}" />':"[img]{SRC}[/img]",
-						'<img src="{SRC}" width="{WIDTH}" height="{HEIGHT}"/>':"[img width={WIDTH},height={HEIGHT}]{SRC}[/img]"
+						'<img src="{SRC}" width="{SIZE}" />':"[img size={SIZE}]{SRC}[/img]"
 					}
 				},
 				bullist : {
@@ -145,8 +141,8 @@ wbbdebug=true;
 					buttonHTML: '<span class="fonticon ve-tlb-list1">\uE009</span>',
 					excmd: 'insertUnorderedList',
 					transform : {
-						'<ul>{SELTEXT}</ul>':"[list]{SELTEXT}[/list]",
-						'<li>{SELTEXT}</li>':"[*]{SELTEXT}[/*]"
+						'<ul>{SELTEXT}</ul>':"[ul]{SELTEXT}[/ul]",
+						'<li>{SELTEXT}</li>':"[li]{SELTEXT}[/li]"
 					}
 				},
 				numlist : {
@@ -154,8 +150,8 @@ wbbdebug=true;
 					buttonHTML: '<span class="fonticon ve-tlb-numlist1">\uE00a</span>',
 					excmd: 'insertOrderedList',
 					transform : {
-						'<ol>{SELTEXT}</ol>':"[list=1]{SELTEXT}[/list]",
-						'<li>{SELTEXT}</li>':"[*]{SELTEXT}[/*]"
+						'<ol>{SELTEXT}</ol>':"[ol]{SELTEXT}[/ol]",
+						'<li>{SELTEXT}</li>':"[li]{SELTEXT}[/li]"
 					}
 				},
 				quote : {
@@ -164,19 +160,74 @@ wbbdebug=true;
 					hotkey: 'ctrl+shift+3',
 					//subInsert: true,
 					transform : { 
-						'<div class="quote">{SELTEXT}</div>':"[quote]{SELTEXT}[/quote]"
+						'<div class="kmsgtext-quote">{SELTEXT}</div>':"[quote]{SELTEXT}[/quote]"
 					}
 				},
 				code : {
 					title: CURLANG.code,
+					type: 'select',
 					buttonText: '[code]',
 					/* buttonHTML: '<span class="fonticon">\uE00d</span>', */
 					hotkey: 'ctrl+shift+4',
-					onlyClearText: true,
-					transform : {
-						'<div class="codewrap"><div class="codetop" contenteditable="false">Код:</div><div class="codemain">{SELTEXT}</div></div>':"[code]{SELTEXT}[/code]"
+					options: "code_ini_format,code_css_format,code_php_format,code_javascript_format,code_sql_format,code_xml_format"
+				},
+
+				// Code options
+				code_ini_format: {
+					title: CURLANG.code_ini_format,
+					buttonText: "code1",
+					excmd: 'code',
+					exvalue: "1",
+					transform: {
+						'<div class="highlight"><pre class="ini">{SELTEXT}</pre></div>':'[code type=ini]{SELTEXT}[/code]'
 					}
 				},
+				code_css_format: {
+					title: CURLANG.code_css_format,
+					buttonText: "code2",
+					excmd: 'code',
+					exvalue: "2",
+					transform: {
+						'<div class="highlight"><pre class="css" style="font-family:monospace;">{SELTEXT}</pre></div>':'[code type=css]{SELTEXT}[/code]'
+					}
+				},
+				code_php_format: {
+					title: CURLANG.code_php_format,
+					buttonText: "code3",
+					excmd: 'code',
+					exvalue: "3",
+					transform: {
+						'<div class="highlight"><pre class="php" style="font-family:monospace;">{SELTEXT}</pre></div>':'[code type=php]{SELTEXT}[/code]'
+					}
+				},
+				code_javascript_format: {
+					title: CURLANG.code_javascript_format,
+					buttonText: "code4",
+					excmd: 'code',
+					exvalue: "4",
+					transform: {
+						'<div class="highlight"><pre class="javascript" style="font-family:monospace;">{SELTEXT}</pre></div>':'[code type=javascript]{SELTEXT}[/code]'
+					}
+				},
+				code_sql_format: {
+					title: CURLANG.code_sql_format,
+					buttonText: "code5",
+					excmd: 'code',
+					exvalue: "5",
+					transform: {
+						'<div class="highlight"><pre class="sql" style="font-family:monospace;">{SELTEXT}</pre></div>':'[code type=sql]{SELTEXT}[/code]'
+					}
+				},
+				code_xml_format: {
+					title: CURLANG.code_xml_format,
+					buttonText: "code6",
+					excmd: 'code',
+					exvalue: "6",
+					transform: {
+						'<div class="highlight"><pre class="xml" style="font-family:monospace;">{SELTEXT}</pre></div>':'[code type=xml]{SELTEXT}[/code]'
+					}
+				},
+
 				offtop : {
 					title: CURLANG.offtop,
 					buttonText: 'offtop',
@@ -218,7 +269,7 @@ wbbdebug=true;
 				fontsize: {
 					type: 'select',
 					title: CURLANG.fontsize,
-					options: "fs_verysmall,fs_small,fs_normal,fs_big,fs_verybig"
+					options: "fs_extrasmall,fs_verysmall,fs_small,fs_normal,fs_big,fs_verybig"
 				},
 				fontfamily: {
 					type: 'select',
@@ -309,49 +360,58 @@ wbbdebug=true;
 				},
 				
 				//select options
-				fs_verysmall: {
-					title: CURLANG.fs_verysmall,
+				fs_extrasmall: {
+					title: CURLANG.fs_extrasmall,
 					buttonText: "fs1",
 					excmd: 'fontSize',
 					exvalue: "1",
 					transform: {
-						'<font size="1">{SELTEXT}</font>':'[size=50]{SELTEXT}[/size]'
+						'<font size="1">{SELTEXT}</font>':'[size=1]{SELTEXT}[/size]'
 					}
 				},
-				fs_small: {
-					title: CURLANG.fs_small,
+				fs_verysmall: {
+					title: CURLANG.fs_verysmall,
 					buttonText: "fs2",
 					excmd: 'fontSize',
 					exvalue: "2",
 					transform: {
-						'<font size="2">{SELTEXT}</font>':'[size=85]{SELTEXT}[/size]'
+						'<font size="2">{SELTEXT}</font>':'[size=2]{SELTEXT}[/size]'
 					}
 				},
-				fs_normal: {
-					title: CURLANG.fs_normal,
+				fs_small: {
+					title: CURLANG.fs_small,
 					buttonText: "fs3",
 					excmd: 'fontSize',
 					exvalue: "3",
 					transform: {
-						'<font size="3">{SELTEXT}</font>':'[size=100]{SELTEXT}[/size]'
+						'<font size="3">{SELTEXT}</font>':'[size=3]{SELTEXT}[/size]'
 					}
 				},
-				fs_big: {
-					title: CURLANG.fs_big,
+				fs_normal: {
+					title: CURLANG.fs_normal,
 					buttonText: "fs4",
 					excmd: 'fontSize',
 					exvalue: "4",
 					transform: {
-						'<font size="4">{SELTEXT}</font>':'[size=150]{SELTEXT}[/size]'
+						'<font size="4">{SELTEXT}</font>':'[size=4]{SELTEXT}[/size]'
+					}
+				},
+				fs_big: {
+					title: CURLANG.fs_big,
+					buttonText: "fs5",
+					excmd: 'fontSize',
+					exvalue: "5",
+					transform: {
+						'<font size="5">{SELTEXT}</font>':'[size=5]{SELTEXT}[/size]'
 					}
 				},
 				fs_verybig: {
 					title: CURLANG.fs_verybig,
-					buttonText: "fs5",
+					buttonText: "fs6",
 					excmd: 'fontSize',
 					exvalue: "6",
 					transform: {
-						'<font size="6">{SELTEXT}</font>':'[size=200]{SELTEXT}[/size]'
+						'<font size="6">{SELTEXT}</font>':'[size=6]{SELTEXT}[/size]'
 					}
 				},
 				
