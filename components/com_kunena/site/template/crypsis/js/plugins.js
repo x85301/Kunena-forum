@@ -111,7 +111,7 @@ jQuery(document).ready(function() {
 			code: {
 				hotkey: "ctrl+shift+3", // Keyboard shortcut
 				transform: {
-					'<div class="mycode"><div class="codetop">Это код программы:</div><div class="codemain">{SELTEXT}</div></div>':'[code]{SELTEXT}[/code]'
+					'<div class="highlight"><pre>{SELTEXT}</pre></div>':'[code]{SELTEXT}[/code]'
 				}
 			},
 			horizontalrule: {
@@ -125,6 +125,17 @@ jQuery(document).ready(function() {
 			poll: {
 				title: CURLANG.button_title_poll,
 				buttonText: 'poll',
+				modal: {
+					title: CURLANG.modal_poll_title,
+						width: "500px",
+						tabs: [
+						{
+							input: [
+							{param: "POLL_FIELD1",title:CURLANG.modal_poll_first_field}
+							]
+						}
+						]
+				},
 				buttonHTML: '<span class="fonticon ve-tlb-poll"></span>',
 					transform: {
 						'<div class="kmsgtext-hide"> {SelText} </div> ':' [poll] {SELTEXT} [/poll]'

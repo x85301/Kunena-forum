@@ -2,6 +2,7 @@
 * http://www.wysibb.com
 * Copyright (c) 2013 Vadim Dobroskok; Licensed MIT, GPL */
 
+// Set false on production
 wbbdebug=true;
 (function($) {
 	'use strict';
@@ -125,7 +126,7 @@ wbbdebug=true;
 								title: CURLANG.modal_img_tab1,
 								input: [
 									{param: "SRC",title:CURLANG.modal_imgsrc_text,validation: '^http(s)?://.*?\.(jpg|png|gif|jpeg)$'},
-                  {param: "SIZE",title:CURLANG.modal_imgsrc_size}
+									{param: "SIZE",title:CURLANG.modal_imgsrc_size}
 								]
 							}
 						],

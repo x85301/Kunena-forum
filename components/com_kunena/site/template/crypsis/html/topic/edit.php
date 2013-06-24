@@ -14,9 +14,9 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.tooltip');
 JHtml::_('behavior.keepalive');
 
-include_once (KPATH_SITE.'/lib/kunena.bbcode.string.php');
-
 $this->document->addScriptDeclaration('config_attachment_limit = '.$this->config->attachment_limit );
+
+KunenaBbcodeEditor::loadLanguageStrings();
 
 $this->k=0;
 ?>

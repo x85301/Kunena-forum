@@ -190,6 +190,12 @@ html{height:100% !important;}
 .ve-tlb-smilebox{background: url(./img/icons.png) 0 -480px;width:20px;}
 .ve-tlb-video{background: url(./img/icons.png) 0 -500px;width:20px;}
 .ve-tlb-removeformat{background: url(./img/icons.png) 0 -540px;width:20px;}
+.ve-tlb-horizontalrule{background: url(./img/icons.png) 0 -558px;width:20px;}
+.ve-tlb-spoiler{background: url(./img/icons.png) 0 -576px;width:20px;}
+.ve-tlb-poll{background: url(./img/icons.png) 0 -596px;width:20px;}
+.ve-tlb-help{background: url(./img/icons.png) 0 -614px;width:20px;}
+.ve-tlb-maps{background: url(./img/icons.png) 0 -633px;width:20px;}
+.ve-tlb-hidden{background: url(./img/icons.png) 0 -653px;width:20px;}
 
 .tthotkey{color:#ddd;font-size:9px;}
 

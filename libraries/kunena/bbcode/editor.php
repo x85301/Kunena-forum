@@ -160,6 +160,49 @@ class KunenaBbcodeEditor {
 		JFactory::getDocument()->addScriptDeclaration( "// <![CDATA[\n{$js}\n// ]]>");
 	}
 
+	/**
+	 * Allow to load strings to display them in javascript in Joomla! way
+	 */
+	public static function loadLanguageStrings() {
+		JText::script('COM_KUNENA_EDITOR_BOLD');
+		JText::script('COM_KUNENA_EDITOR_ITALIC');
+		JText::script('COM_KUNENA_EDITOR_UNDERL');
+		JText::script('COM_KUNENA_EDITOR_STRIKE');
+		JText::script('COM_KUNENA_EDITOR_LINK');
+		JText::script('COM_KUNENA_EDITOR_IMAGELINK');
+		JText::script('COM_KUNENA_EDITOR_SUP');
+		JText::script('COM_KUNENA_EDITOR_SUB');
+		JText::script('COM_KUNENA_EDITOR_COLOR');
+		JText::script('COM_KUNENA_EDITOR_LEFT');
+		JText::script('COM_KUNENA_EDITOR_CENTER');
+		JText::script('COM_KUNENA_EDITOR_RIGHT');
+		JText::script('COM_KUNENA_EDITOR_TABLE');
+		JText::script('COM_KUNENA_EDITOR_ULIST');
+		JText::script('COM_KUNENA_EDITOR_OLIST');
+		JText::script('COM_KUNENA_EDITOR_QUOTE');
+		JText::script('COM_KUNENA_EDITOR_CODE');
+		JText::script('COM_KUNENA_EDITOR_SPOILER');
+		JText::script('COM_KUNENA_EDITOR_FONTSIZE');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_XS');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_L');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_M');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_S');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_XL');
+		JText::script('COM_KUNENA_EDITOR_HELPLINE_FONTSIZE_XXL');
+		JText::script('COM_KUNENA_EDITOR_VIDEO');
+
+		JText::script('COM_KUNENA_EDITOR_REMOVE_FORMAT');
+		JText::script('COM_KUNENA_EDITOR_MODAL_MAP_TITLE');
+		JText::script('COM_KUNENA_EDITOR_MODAL_MAP_COORD_CITY');
+		JText::script('COM_KUNENA_EDITOR_MODAL_HELP_TITLE');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_HORIZONTALRULE');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_POLL');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_SPOILER');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_HIIDEN');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_EBAY');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_MAPS');
+		JText::script('COM_KUNENA_EDITOR_BUTTON_TITLE_HELP');
+	}
 }
 
 /**
