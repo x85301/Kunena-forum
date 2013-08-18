@@ -36,14 +36,15 @@ class KunenaViewTopic extends KunenaView {
 
 			$db = JFactory::getDBO ();
 			$kquery = new KunenaDatabaseQuery();
-			$kquery->select('*')->from("{$db->qn('#__kunena_smileys')}")->where("code LIKE '%{$db->escape($search)}%'");
+			$kquery->select('*')->from("{$db->qn('#__kunena_smileys')}")->where("code LIKE '%{$db->escape($search)}%' AND emoticonbar=1");
 			$db->setQuery ( $kquery );
 			$smileys = $db->loadObjectList ();
 			KunenaError::checkDatabaseError();
 
 			foreach($smileys as $smiley) {
-				$emojis['key'] = $smiley->key;
-				$emojis['name'] = $smiley->name;
+				$emojis['key'] = $smiley->code;
+				$emojis['name'] = $smiley->location;
+				$emojis['url'] = JUri::root().'media/kunena/emoticons/'.$smiley->location;
 
 				$response['emojis'][] = $emojis;
 			}

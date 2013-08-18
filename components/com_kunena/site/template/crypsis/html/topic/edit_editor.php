@@ -247,7 +247,7 @@ if (!$this->config->disemoticons) : ?>
 	<div class="controls">
 		<textarea class="input-xxlarge required" name="message" id="kbbcode-message" rows="12" tabindex="3"><?php echo $this->escape($this->message->message); ?></textarea>
 		<input type="hidden" id="kurl_mention" name="kurl_mention" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>" />
-		<input type="hidden" id="kurl_emoji" name="kurl_emoji" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>" />
+		<input type="hidden" id="kurl_emojis" name="kurl_emoji" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=topic&layout=listemoji&format=raw') ?>" />
 	</div>
 </div>
 

@@ -129,7 +129,7 @@ jQuery(document).ready(function() {
 		}
 	}).atwho({
 		at: ":",
-		tpl:"<li data-value='${key}'>${name} <img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' /></li>",
+		tpl:"<li data-value='${key}'>${name} <img src='${url}'  height='20' width='20' /></li>",
 		callbacks: {
 			remote_filter: function(query, callback)  {
 				jQuery.ajax({
