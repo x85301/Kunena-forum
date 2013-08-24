@@ -15,6 +15,13 @@ if (!class_exists('JLoader')) return;
 // Define Kunena framework path.
 define('KPATH_FRAMEWORK', __DIR__);
 
+// Register the Joomla compatibility layer.
+if (version_compare(JVERSION, '3', '>')) {
+	JLoader::registerPrefix('KunenaCompat', KPATH_FRAMEWORK . '/compat/joomla3');
+} else {
+	JLoader::registerPrefix('KunenaCompat', KPATH_FRAMEWORK . '/compat/joomla2');
+}
+
 // Register the library base path for Kunena Framework.
 JLoader::registerPrefix('Kunena', KPATH_FRAMEWORK);
 
@@ -59,3 +66,6 @@ JLoader::register('KunenaForumTopic', KPATH_FRAMEWORK . '/forum/topic/topic.php'
 JLoader::register('KunenaForumTopicPoll', KPATH_FRAMEWORK . '/forum/topic/poll/poll.php');
 JLoader::register('KunenaForumTopicUser', KPATH_FRAMEWORK . '/forum/topic/user/user.php');
 JLoader::register('KunenaForumTopicUserRead', KPATH_FRAMEWORK . '/forum/topic/user/read/read.php');
+
+// Register CKunenaLink class in order to allow old templates to work
+JLoader::register('CKunenaLink', KPATH_SITE . '/lib/kunena.link.class.php');

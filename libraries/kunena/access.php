@@ -43,8 +43,7 @@ class KunenaAccess {
 
 		// Load administrators and moderators from cache
 		$cache = JFactory::getCache('com_kunena', 'output');
-		// FIXME: enable caching after fixing the issues
-		$data = false; //$cache->get(self::$cacheKey, 'com_kunena');
+		$data = $cache->get(self::$cacheKey, 'com_kunena');
 		if ($data) {
 			$data = unserialize($data);
 			if (isset($data['v']) && $data['v'] == 1) {
@@ -81,9 +80,11 @@ class KunenaAccess {
 
 		/** @var KunenaAccess $access */
 		foreach ($this->accesstypes['all'] as $access) {
+			KUNENA_PROFILER ? KunenaProfiler::instance()->start('function '.__CLASS__.'::'.__FUNCTION__.'('.get_class($access).')') : null;
 			if (method_exists($access, 'loadCategoryRoles')) {
 				$this->storeRoles((array) $access->loadCategoryRoles());
 			}
+			KUNENA_PROFILER ? KunenaProfiler::instance()->stop('function '.__CLASS__.'::'.__FUNCTION__.'('.get_class($access).')') : null;
 		}
 		// Load native category moderators and administrators
 		$db = JFactory::getDBO ();
@@ -94,8 +95,6 @@ class KunenaAccess {
 
 		// Store new data into cache
 		$cache = JFactory::getCache('com_kunena', 'output');
-		// FIXME: enable caching after fixing the issues
-		/*
 		$cache->store(serialize(array(
 			'v'=>1, // version identifier
 			'ac'=>$this->adminsByCatid,
@@ -103,7 +102,6 @@ class KunenaAccess {
 			'mc'=>$this->moderatorsByCatid,
 			'mu'=>$this->moderatorsByUserid,
 			)), self::$cacheKey, 'com_kunena');
-		*/
 	}
 
 	/**
@@ -180,13 +178,42 @@ window.addEvent('domready', function(){
 		return JHtml::_ ( 'select.genericlist', $accesstypes, 'accesstype', 'class="inputbox" size="'.count($accesstypes).'" onchange="javascript:kShowAccessType(\'kaccess\', $(this))"', 'value', 'text', $category->accesstype );
 	}
 
+	/**
+	 * Get access groups for the selected category.
+	 *
+	 * @param KunenaForumCategory  $category  Category
+	 * @return array|null
+	 */
+	public function getCategoryAccess(KunenaForumCategory $category)
+	{
+		$list = array();
+
+		$accesstype = $category->accesstype;
+		if (!isset($this->accesstypes[$accesstype])) return $list;
+		/** @var KunenaAccess $access */
+		foreach ($this->accesstypes[$accesstype] as $access) {
+			if (method_exists($access, 'getCategoryAccess')) {
+				$list += $access->getCategoryAccess($category);
+			}
+		}
+		if (!$list) {
+			// Legacy support.
+			$id = $category->access;
+			$name = $this->getGroupName($accesstype, $id);
+			$list["{$accesstype}.{$id}"] = array('type'=>'joomla.level', 'id'=>$id,
+				'title'=>$name);
+		}
+		return $list;
+	}
 
 	/**
 	 * Get group name in selected access type.
 	 *
 	 * @param string	$accesstype	Access type.
 	 * @param mixed		$id			Group id.
-	 * @return string
+	 * @return string|null
+	 *
+	 * @deprecated 3.0.1
 	 */
 	public function getGroupName($accesstype, $id) {
 		if (!isset($this->accesstypes[$accesstype])) return JText::sprintf('COM_KUNENA_INTEGRATION_UNKNOWN', $id);

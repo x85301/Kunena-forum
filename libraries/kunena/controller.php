@@ -35,6 +35,8 @@ class KunenaController extends JControllerLegacy {
 		if ($this->me->userid && !$this->me->exists()) {
 			$this->me->save();
 		}
+
+		if (empty($this->input)) $this->input = $this->app->input;
 	}
 
 	/**
@@ -84,6 +86,7 @@ class KunenaController extends JControllerLegacy {
 			KunenaFactory::loadLanguage('com_kunena.controllers', 'admin');
 			KunenaFactory::loadLanguage('com_kunena.models', 'admin');
 			KunenaFactory::loadLanguage('com_kunena.sys', 'admin');
+			KunenaFactory::loadLanguage('com_kunena', 'site');
 
 		} else {
 			$class = $prefix . 'Controller' . ucfirst ( $view );
@@ -126,7 +129,6 @@ class KunenaController extends JControllerLegacy {
 			KunenaFactory::loadLanguage('com_kunena.install', 'admin');
 			KunenaFactory::loadLanguage('com_kunena.views', 'admin');
 			// Load last to get deprecated language files to work
-			KunenaFactory::loadLanguage('com_kunena', 'site');
 			KunenaFactory::loadLanguage('com_kunena', 'admin');
 
 			// Version warning
@@ -256,11 +258,15 @@ class KunenaController extends JControllerLegacy {
 	}
 
 	/**
-	 * @param string $fragment
+	 * @param string $anchor
 	 */
-	protected function redirectBack($fragment = '') {
-		$httpReferer = JRequest::getVar ( 'HTTP_REFERER', JUri::base ( true ), 'server' );
-		JFactory::getApplication ()->redirect ( $httpReferer.($fragment ? '#'.$fragment : '') );
+	protected function redirectBack($anchor = '') {
+		$default = $this->app->isSite() ? KunenaRoute::_() : JUri::base(true);
+		$uri = JUri::getInstance($this->input->server->getString('HTTP_REFERER', $default));
+		if (!JUri::isInternal($uri->toString())) $uri = JUri::getInstance($default);
+		if ($anchor) $uri->setFragment($anchor);
+
+		JFactory::getApplication()->redirect($uri->toString());
 	}
 
 }
