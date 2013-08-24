@@ -16,14 +16,6 @@ if (version_compare(JVERSION, '3.0','>')) {
 }
 $this->displayBreadcrumb ();
 
-if (!$this->me->exists()) {
-	$this->document->addScriptDeclaration( "// <![CDATA[
-window.addEvent('domready', function() {
-	// Attach auto completer to the following ids:
-	new Autocompleter.Request.JSON('kusername', '" . KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list&format=raw') . "', { 'postVar': 'search' });
-});
-// ]]>");
-}
 ?>
 
 <div class="well"> <span><a class="ktoggler <?php echo $this->search_class; ?>" title="<?php echo $this->search_title ?>" rel="advsearch"></a></span>
@@ -33,6 +25,9 @@ window.addEvent('domready', function() {
       <form action="<?php echo KunenaRoute::_('index.php?option=com_kunena') ?>" method="post" name="searchform" id="searchform">
         <input type="hidden" name="view" value="search" />
         <input type="hidden" name="task" value="results" />
+        <?php if ($this->me->exists()): ?>
+        	<input type="hidden" id="kurl_users" name="kurl_users" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>" />
+        <?php endif; ?>
         <?php echo JHtml::_( 'form.token' ); ?>
         <table id="kforumsearch">
           <tbody id="advsearch"<?php echo $this->search_style; ?>>
@@ -49,7 +44,7 @@ window.addEvent('domready', function() {
                 <fieldset class="fieldset">
                   <legend><?php echo JText::_('COM_KUNENA_SEARCH_SEARCHBY_USER'); ?></legend>
                   <label class="searchlabel"><?php echo JText::_('COM_KUNENA_SEARCH_UNAME'); ?>:
-                    <input id="kusername" class="ks input" type="text" name="searchuser" value="<?php echo $this->escape($this->state->get('query.searchuser')); ?>" />
+                    <input id="kusersearch" class="ks input" type="text" name="searchuser" value="<?php echo $this->escape($this->state->get('query.searchuser')); ?>" />
                   </label>
                   <?php /*
 									<select class="ks" name="starteronly">

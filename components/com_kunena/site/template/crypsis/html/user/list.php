@@ -10,14 +10,6 @@
  **/
 defined ( '_JEXEC' ) or die ();
 
-if ($this->me->exists()) {
-	$this->document->addScriptDeclaration( "// <![CDATA[
-document.addEvent('domready', function() {
-	// Attach auto completer to the following ids:
-	new Autocompleter.Request.JSON('kusersearch', '".KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list&format=raw')."', { 'postVar': 'search' });
-});
-// ]]>");
-}
 ?>
 
 <div>
@@ -33,6 +25,9 @@ document.addEvent('domready', function() {
 					<input id="kusersearch" type="text" name="search" class="inputbox"
 							value="<?php echo $this->escape($this->state->get('list.search', JText::_('COM_KUNENA_USRL_SEARCH'))); ?>" onblur="if(this.value=='') this.value='<?php echo $this->escape(JText::_('COM_KUNENA_USRL_SEARCH')); ?>';" onfocus="if(this.value=='<?php echo $this->escape(JText::_('COM_KUNENA_USRL_SEARCH')); ?>') this.value='';" />
 					<input type="image" src="<?php echo $this->ktemplate->getImagePath('usl_search_icon.png') ?>" alt="<?php echo JText::_('COM_KUNENA_USRL_SEARCH'); ?>" style="border: 0px;" />
+					<?php if ($this->me->exists()): ?>
+						<input type="hidden" id="kurl_users" name="kurl_users" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=listmention&format=raw') ?>" />
+					<?php endif; ?>
 				</form>
 			</div>
 			<div>

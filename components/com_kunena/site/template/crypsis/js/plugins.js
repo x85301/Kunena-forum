@@ -144,5 +144,28 @@ jQuery(document).ready(function() {
 			}
 		}
 	});
+	
+	/* Provide autocomplete user list in search form and in user list */
+	if (  jQuery( '#kurl_users' ).length > 0 ) {
+		var users_url = jQuery( '#kurl_users' ).val();
+		jQuery('#kusersearch').atwho({
+			at: "", 
+			tpl: '<li data-value="${username}"><i class="icon-user"></i>${name} <small>${username}</small></li>',
+			limit: 7, 
+			callbacks: {
+				remote_filter: function(query, callback)  {
+					jQuery.ajax({
+						url: users_url,
+						data: {
+							search : query
+						},
+						success: function(data) {
+							callback(data.names);
+						}
+					});
+				}
+			}
+		});
+	}
 });
 
