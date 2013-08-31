@@ -40,6 +40,7 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 		// Template requires Mootools 1.4+ framework
 		$this->loadMootools();
 		JHtml::_('behavior.tooltip');
+		JHtml::_('bootstrap.modal');
 
 		JHtml::_('jquery.framework');
 		JHtml::_('formbehavior.chosen');
@@ -54,8 +55,8 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 		$this->addStyleSheet ( 'css/kunena.css' );
 
 		if ( KunenaFactory::getConfig()->pollenabled == 1 ) {
-			JText::script('KUNENA_POLL_OPTION_NAME');
-			JText::script('KUNENA_EDITOR_HELPLINE_OPTION');
+			JText::script('COM_KUNENA_POLL_OPTION_NAME');
+			JText::script('COM_KUNENA_EDITOR_HELPLINE_OPTION');
 			$this->addScript( 'js/kunena.poll.js' );
 		}
 
@@ -65,12 +66,6 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 			$this->addScript( 'js/mediaboxAdv.js' );
 			//$this->addStyleSheet ( 'css/mediaboxAdv.css');
 		}
-
-		// Toggler language strings
-		JFactory::getDocument()->addScriptDeclaration('// <![CDATA[
-var kunena_toggler_close = "'.JText::_('COM_KUNENA_TOGGLER_COLLAPSE').'";
-var kunena_toggler_open = "'.JText::_('COM_KUNENA_TOGGLER_EXPAND').'";
-// ]]>');
 
 		parent::initialize();
 	}
@@ -88,7 +83,7 @@ var kunena_toggler_open = "'.JText::_('COM_KUNENA_TOGGLER_EXPAND').'";
 				'list'=>'reply');
 
 		// need special style for buttons in drop-down list
-		$buttonsDropdown = array('reply', 'quote', 'edit', 'delete', 'unsubscribe', 'favorite', 'sticky', 'lock', 'moderate', 'undelete', 'permdelete' );
+		$buttonsDropdown = array('reply', 'quote', 'edit', 'delete', 'unsubscribe', 'unfavorite', 'favorite', 'unsticky', 'sticky', 'unlock', 'lock', 'moderate', 'undelete', 'permdelete' );
 
 		$text = JText::_("COM_KUNENA_BUTTON_{$scope}_{$name}");
 		$title = JText::_("COM_KUNENA_BUTTON_{$scope}_{$name}_LONG");

@@ -159,7 +159,6 @@
 
 		<!-- Remove Mirage & Crypsis template -->
 		<delete dir="${tmp_dir}/packages/com_kunena/site/template/mirage" />
-		<delete dir="${tmp_dir}/packages/com_kunena/site/template/crypsis" />
 
 		<!-- Move files needed by the installer -->
 		<copy file="${project_dir}/pkg_kunena.xml" todir="${build_dir}" overwrite="true" filtering="true" />
@@ -189,7 +188,6 @@
 		<yui-compressor warn="false" munge="true" charset="UTF-8" fromdir="${tmp_dir}/packages/com_kunena/site" todir="${tmp_dir}/packages/com_kunena/site">
 			<include name="**/*.js" />
 			<include name="**/*.css" />
-			<exclude name="template/mirage/css/*.css" />
 		</yui-compressor>
 		<yui-compressor warn="false" munge="true" charset="UTF-8" fromdir="${tmp_dir}/packages/kunena_media/js" todir="${tmp_dir}/packages/kunena_media/js">
 			<include name="**/*.js" />
@@ -288,16 +286,12 @@
 		<language tag="eo-XX" />
 		<language tag="es-ES" />
 		<language tag="et-EE" />
+		<language tag="eu-ES" />
 		<language tag="fa-IR" />
 		<language tag="fi-FI" />
 		<language tag="fr-FR" />
-		<!--language tag="gl-ES" /-->
 		<language tag="he-IL" />
-		<!--language tag="hi-IN" /-->
-		<language tag="hr-HR" />
-		<language tag="fr-FR" />
-		<!--language tag="gl-ES" /-->
-		<language tag="he-IL" />
+		<language tag="hi-IN" />
 		<language tag="hr-HR" />
 		<language tag="hu-HU" />
 		<language tag="id-ID" />
@@ -316,8 +310,8 @@
 		<language tag="pt-PT" />
 		<language tag="ro-RO" />
 		<language tag="ru-RU" />
-		<language tag="sl-SI" />
 		<language tag="sk-SK" />
+		<language tag="sl-SI" />
 		<language tag="sq-AL" />
 		<language tag="sr-RS" />
 		<language tag="sr-YU" />
@@ -332,6 +326,7 @@
 		<language tag="zh-TW" />
 
 		<archive destfile="${build_dir}/packages/plg_system_kunena${str.version}" basedir="${tmp_dir}/packages/plg_system_kunena" />
+		<archive destfile="${build_dir}/packages/plg_content_kunena${str.version}" basedir="${tmp_dir}/packages/plg_content_kunena" />
 		<archive destfile="${build_dir}/packages/plg_quickicon_kunena${str.version}" basedir="${tmp_dir}/packages/plg_quickicon_kunena" />
 		<archive destfile="${build_dir}/packages/lib_kunena${str.version}" basedir="${tmp_dir}/packages/lib_kunena" />
 		<archive destfile="${build_dir}/packages/com_kunena${str.version}" basedir="${tmp_dir}/packages/com_kunena" />

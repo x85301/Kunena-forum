@@ -35,6 +35,8 @@ class KunenaController extends JControllerLegacy {
 		if ($this->me->userid && !$this->me->exists()) {
 			$this->me->save();
 		}
+
+		if (empty($this->input)) $this->input = $this->app->input;
 	}
 
 	/**
@@ -100,6 +102,38 @@ class KunenaController extends JControllerLegacy {
 		}
 
 		return $instance;
+	}
+
+	/**
+	 * Execute task.
+	 *
+	 * @param string $task
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function execute($task)
+	{
+		$dot = strpos($task, '.');
+		$this->task = $dot ? substr($task, $dot + 1) : $task;
+
+		$task = strtolower($this->task);
+		if (isset($this->taskMap[$this->task]))
+		{
+			$doTask = $this->taskMap[$this->task];
+		}
+		elseif (isset($this->taskMap['__default']))
+		{
+			$doTask = $this->taskMap['__default'];
+		}
+		else
+		{
+			throw new Exception(JText::sprintf('JLIB_APPLICATION_ERROR_TASK_NOT_FOUND', $task), 404);
+		}
+
+		// Record the actual task being fired
+		$this->doTask = $doTask;
+
+		return $this->$doTask();
 	}
 
 	/**
@@ -256,11 +290,15 @@ class KunenaController extends JControllerLegacy {
 	}
 
 	/**
-	 * @param string $fragment
+	 * @param string $anchor
 	 */
-	protected function redirectBack($fragment = '') {
-		$httpReferer = JRequest::getVar ( 'HTTP_REFERER', JUri::base ( true ), 'server' );
-		JFactory::getApplication ()->redirect ( $httpReferer.($fragment ? '#'.$fragment : '') );
+	protected function redirectBack($anchor = '') {
+		$default = $this->app->isSite() ? KunenaRoute::_() : JUri::base(true);
+		$uri = JUri::getInstance($this->input->server->getString('HTTP_REFERER', $default));
+		if (!JUri::isInternal($uri->toString())) $uri = JUri::getInstance($default);
+		if ($anchor) $uri->setFragment($anchor);
+
+		JFactory::getApplication()->redirect($uri->toString());
 	}
 
 }
