@@ -53,13 +53,11 @@ class KunenaControllerTopic extends KunenaController {
 			$this->redirectBack ();
 		}
 
-		$captcha = KunenaSpamRecaptcha::getInstance();
-		if ($captcha->enabled()) {
-			$success = $captcha->verify();
-			if ( !$success ) {
-				$this->app->enqueueMessage ( $captcha->getError(), 'error' );
-				$this->redirectBack ();
-			}
+		JPluginHelper::importPlugin('captcha');
+		$dispatcher = JDispatcher::getInstance();
+		$res = $dispatcher->trigger('onCheckAnswer');
+		if (!$res) {
+
 		}
 
 		if (!$this->id) {

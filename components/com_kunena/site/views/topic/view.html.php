@@ -108,8 +108,7 @@ class KunenaViewTopic extends KunenaView {
 		}
 
 		// Get keywords, captcha & quick reply
-		$this->captcha = KunenaSpamRecaptcha::getInstance();
-		$this->quickreply = ($this->topic->authorise('reply',null, false) && $this->me->exists() && !$this->captcha->enabled());
+		$this->quickreply = ($this->topic->authorise('reply',null, false) && $this->me->exists() && !$this->_captchaIsEnabled());
 		$this->keywords = $this->topic->getKeywords(false, ', ');
 
 		$this->_prepareDocument('default');
@@ -152,14 +151,7 @@ class KunenaViewTopic extends KunenaView {
 		$this->setLayout('edit');
 
 		// Get captcha
-		$captcha = KunenaSpamRecaptcha::getInstance();
-		if ($captcha->enabled()) {
-			$this->captchaHtml = $captcha->getHtml();
-			if ( !$this->captchaHtml ) {
-				$this->app->enqueueMessage ( $captcha->getError(), 'error' );
-				$this->redirectBack ();
-			}
-		}
+		$this->catpchaIsEnabled = $this->_getCaptchaPlugin('dynamic_recaptcha_1');
 
 		// Get saved message
 		$saved = $this->app->getUserState('com_kunena.postfields');
@@ -230,14 +222,8 @@ class KunenaViewTopic extends KunenaView {
 	protected function DisplayReply($tpl = null) {
 		$this->setLayout('edit');
 
-		$captcha = KunenaSpamRecaptcha::getInstance();
-		if ($captcha->enabled()) {
-			$this->captchaHtml = $captcha->getHtml();
-			if ( !$this->captchaHtml ) {
-				$this->app->enqueueMessage ( $captcha->getError(), 'error' );
-				$this->redirectBack ();
-			}
-		}
+		// Load captcha
+		$this->catpchaIsEnabled = $this->_getCaptchaPlugin('dynamic_recaptcha_1');
 
 		$saved = $this->app->getUserState('com_kunena.postfields');
 
@@ -969,5 +955,31 @@ class KunenaViewTopic extends KunenaView {
 
 	public function getSamePageAnkerLink($anker, $name, $rel = 'nofollow', $class = '') {
 		return '<a ' . ($class ? 'class="' . $class . '" ' : '') . 'href="#' . $anker .'"'. ($rel ? ' rel="' . $rel . '"' : '') . '>' . $name . '</a>';
+	}
+
+	protected function _captchaIsEnabled() {
+		$me = KunenaUserHelper::getMyself();
+		$config = KunenaFactory::getConfig();
+		// Enabled if guest captcha is enabled and user is not logged in
+		if ($config->captcha && !$me->exists())
+			return true;
+		// Enabled if user is moderator or has more posts than the threshold
+		// FIXME: we need a better logic for trusted users
+		if ($me->exists() && !$me->isModerator() && $me->posts < $config->captcha_post_limit)
+			return true;
+		// Captcha is disabled
+		return false;
+	}
+
+	protected function _getCaptchaPlugin($element_id = null) {
+		if ( $this->_captchaIsEnabled() ) {
+			// Trigger captcha plugin instace
+			JPluginHelper::importPlugin('captcha');
+			$dispatcher = JDispatcher::getInstance();
+			$result = $dispatcher->trigger('onInit',$element_id);
+
+			return $result[0];
+		}
+		return false;
 	}
 }

@@ -175,13 +175,12 @@ $this->k=0;
 			</td>
 		</tr>
 		<?php endif; ?>
-		<?php if (!empty($this->captchaHtml)) : ?>
+		<?php if ($this->catpchaIsEnabled) : ?>
 		<tr id="kpost-captcha" class="krow<?php echo 1 + $this->k^=1;?>">
 			<td class="kcol-first">
 				<strong><?php echo JText::_('COM_KUNENA_CAPDESC'); ?></strong>
 			</td>
-			<td class="kcol-mid">
-				<?php echo $this->captchaHtml ?>
+			<td id="dynamic_recaptcha_1" class="kcol-mid">
 			</td>
 		</tr>
 		<?php endif; ?>
