@@ -464,4 +464,66 @@ class KunenaAdminControllerCategories extends KunenaController {
 
 		return array($name, $alias);
 	}
+
+	/**
+	  * Method to do batch process on selected categories, to move them, set locked or remove moderators.
+	  *
+	  * @return  boolean  Return true if success.
+	  *
+	  * @since  3.1.0
+	 */
+	public function batch_categories() {
+		if (! JSession::checkToken('post')) {
+			$this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_ERROR_TOKEN' ), 'error' );
+			return;
+		}
+
+		$cid = JRequest::getVar ( 'cid', array (), 'post', 'array' );
+		$cat_target = JRequest::getInt('batch_catid_target', 0);
+		$locked = JRequest::getInt('batch_category_locked', 0);
+		$moderators = JRequest::getInt('batch_categoy_moderators', 0);
+
+		if ( empty($cid) ) {
+			$this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_CATEGORIESMANAGER_BATCH_CATEGORY_NOT_EXIST') );
+			return false;
+		}
+
+		$db = JFactory::getDBO ();
+
+		if ( $cat_target > 0 ) {
+			foreach($cid as $cat) {
+				if ( $cat_target!=$cat ) {
+					$query ="UPDATE #__kunena_categories SET parent_id={$db->quote(intval($cat_target))} WHERE id={$db->quote($cat)}";
+					$db->setQuery((string)$query);
+					$db->query();
+					KunenaError::checkDatabaseError ();
+				}
+			}
+			$this->app->enqueueMessage ( JText::_ ( 'COM_KUNENA_CATEGORIESMANAGER_BATCH_CATEGORY_MOVE_SUCCESS') );
+		}
+
+		$categories = KunenaForumCategoryHelper::getCategories ( $cid );
+		foreach( $categories as $category ) {
+			if ( $locked ) {
+				$post['locked'] = 1;
+				$category->bind ( $post );
+				$success = $category->save ();
+			} else {
+				$post['locked'] = 0;
+				$category->bind ( $post );
+				$success = $category->save ();
+			}
+		}
+
+		if ( $moderators ) {
+			$cids = implode(',',$cid);
+			$query="UPDATE #__kunena_user_categories SET category_id=0 WHERE category_id IN ({$cids})";
+			$db->setQuery((string)$query);
+			$db->query();
+			KunenaError::checkDatabaseError ();
+		}
+
+		$this->setRedirect(KunenaRoute::_($this->baseurl, false));
+		return true;
+	}
 }

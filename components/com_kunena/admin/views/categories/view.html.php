@@ -37,6 +37,7 @@ class KunenaAdminViewCategories extends KunenaView {
 	function displayDefault() {
 		$this->categories = $this->get ( 'AdminCategories' );
 		$this->pagination = $this->get ( 'AdminNavigation' );
+		$this->batch_categories = $this->get ( 'BatchCategories' );
 
 		// Preprocess the list of items to find ordering divisions.
 		$this->ordering = array();
@@ -97,6 +98,20 @@ class KunenaAdminViewCategories extends KunenaView {
 		JToolBarHelper::unpublish();
 		JToolBarHelper::divider();
 		JToolBarHelper::deleteList();
+
+		if (version_compare(JVERSION, '3', '>')) {
+			JHtml::_('bootstrap.modal', 'collapseModal');
+			$title = JText::_('JTOOLBAR_BATCH');
+
+			$bar = JToolBar::getInstance('toolbar');
+
+			// Instantiate a new JLayoutFile instance and render the batch button
+			$layout = new JLayoutFile('joomla.toolbar.batch');
+
+			$dhtml = $layout->render(array('title' => $title));
+			$bar->appendButton('Custom', $dhtml, 'batch');
+		}
+
 		//}
 		JToolBarHelper::spacer();
 		//JToolBarHelper::back ( JText::_ ( 'Home' ), 'index.php?option=com_kunena' );
