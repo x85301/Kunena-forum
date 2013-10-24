@@ -45,6 +45,10 @@ class KunenaTemplateCrypsis extends KunenaTemplate {
 		JHtml::_('jquery.framework');
 		JHtml::_('formbehavior.chosen');
 
+		JHtml::_('jquery.ui');
+		$this->addScript ( 'js/jquery-ui-autocomplete.js' );
+		$this->addStyleSheet ( 'css/jquery.ui.autocomplete.css' );
+
 		// New Kunena JS for default template
 		$this->addScript ( 'js/plugins.js' );
 

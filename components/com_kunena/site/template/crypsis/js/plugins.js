@@ -110,5 +110,28 @@ jQuery(document).ready(function() {
 			jQuery("#kchecktarget").attr('disabled', true);
 		}
 	}); 
+	
+	/* Autocompleter to search user in userlist, check to make sure that jQuery.ui is loaded */
+	if ( jQuery( "#kusersearch" ) != undefined && jQuery.ui ) {
+		if ( jQuery( "#kurl_autocomplete" ) != undefined ) {
+			var url = jQuery( "#kurl_autocomplete" ).val();
+			jQuery( "#kusersearch" ).autocomplete({
+				source: function(request, response) {
+					jQuery.ajax({
+					url: url,
+					dataType: "json",
+					data: {
+						search : request.term
+					},
+					success: function(data) {
+						response(data);
+					}
+				});
+			},
+			min_length: 3,
+			delay: 300
+			});
+		}
+	} 
 });
 

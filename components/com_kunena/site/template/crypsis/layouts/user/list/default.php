@@ -10,17 +10,8 @@
  **/
 defined ( '_JEXEC' ) or die ();
 
-if ($this->me->exists()) {
-	$this->addScriptDeclaration( "// <![CDATA[
-document.addEvent('domready', function() {
-	// Attach auto completer to the following ids:
-	new Autocompleter.Request.JSON('kusersearch', '".KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list&format=raw')."', { 'postVar': 'search' });
-});
-// ]]>");
-}
 $cols = 1;
 ?>
-
 
 <h2>
 	<?php echo JText::_('COM_KUNENA_USRL_USERLIST'); ?>
@@ -36,6 +27,9 @@ $cols = 1;
 </h2>
 
 <form action="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list') ?>" method="post" id="kuserlist-form" name="kuserlist-form">
+	<?php if ($this->me->exists()): ?>
+		<input type="hidden" name="kurl_autocomplete" id="kurl_autocomplete" value="<?php echo KunenaRoute::_('index.php?option=com_kunena&view=user&layout=list&format=raw') ?>" />
+	<?php endif; ?>
 	<input type="hidden" name="filter_order" value="<?php echo $this->state->get('list.ordering'); ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $this->state->get('list.direction'); ?>" />
 	<?php echo JHtml::_( 'form.token' ); ?>
